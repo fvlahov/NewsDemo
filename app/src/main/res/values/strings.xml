@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">NewsDemo</string>
+    <string name="new_user">New user</string>
+    <string name="next">Next</string>
+    <string name="your_name">Your name</string>
+    <string name="user_already_exists">User already exists</string>
+    <string name="ok">Okay</string>
+</resources>

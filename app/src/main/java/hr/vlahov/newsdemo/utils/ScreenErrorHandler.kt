@@ -42,10 +42,10 @@ fun ErrorHandler(
 @Composable
 private fun HandleSnackbar(error: BaseError) {
     val errorMessage = stringResource(id = error.messageRes)
-    val snackbarHostState = remember { mutableStateOf(SnackbarHostState()) }
+    val snackbarHostState = remember { mutableStateOf(SnackbarHostState()) }.value
 
     LaunchedEffect(error) {
-        snackbarHostState.value.showSnackbar(
+        snackbarHostState.showSnackbar(
             message = errorMessage,
             withDismissAction = true,
             duration = SnackbarDuration.Short
@@ -53,7 +53,7 @@ private fun HandleSnackbar(error: BaseError) {
     }
 
     SnackbarHost(
-        hostState = snackbarHostState.value,
+        hostState = snackbarHostState,
         modifier = Modifier
             .padding(8.dp)
             .zIndex(999f)

@@ -13,4 +13,6 @@ interface ProfileUseCase {
     suspend fun doesProfileExist(profileName: String): Boolean
 
     suspend fun signInAsProfile(profileName: String)
+
+    suspend fun isProfileSelected(): Boolean
 }

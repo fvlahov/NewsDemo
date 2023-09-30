@@ -26,4 +26,7 @@ class ProfileUseCaseImpl @Inject constructor(
         credentialLocalRepository.saveCurrentProfileName(profileName)
     }
 
+    override suspend fun isProfileSelected(): Boolean =
+        credentialLocalRepository.fetchCurrentProfileName() != null
+
 }

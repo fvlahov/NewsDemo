@@ -24,7 +24,7 @@ class CreateProfileViewModel @Inject constructor(
             }
 
             profileUseCase.createNewProfile(Profile(name = profileName))
-            navigator.navigateTo(NavTarget.NewsMain)
+            navigator.navigateMainTo(NavTarget.NewsModule)
         }
     }
 }

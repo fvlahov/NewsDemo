@@ -5,7 +5,6 @@ import hr.vlahov.domain.usecases.ProfileUseCase
 import hr.vlahov.newsdemo.base.BaseViewModel
 import hr.vlahov.newsdemo.navigation.NavTarget
 import hr.vlahov.newsdemo.navigation.navigator.Navigator
-import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,23 +15,14 @@ class ChooseProfileViewModel @Inject constructor(
 
     val allProfiles = profileUseCase.allProfiles
 
-    init {
-        launchIn {
-            //Navigate to CreateNewProfile if list of profiles is empty
-            allProfiles.stateIn(this).value.takeIf { it.isEmpty() }?.run {
-                createNewProfile()
-            }
-        }
-    }
-
     fun selectProfile(profileName: String) {
         launchIn {
             profileUseCase.signInAsProfile(profileName)
-            navigator.navigateTo(NavTarget.NewsMain)
+            navigator.navigateMainTo(NavTarget.NewsModule)
         }
     }
 
     fun createNewProfile() {
-        navigator.navigateTo(NavTarget.CreateProfile)
+        navigator.navigateMainTo(NavTarget.CreateProfile)
     }
 }

@@ -5,4 +5,7 @@
     <string name="your_name">Your name</string>
     <string name="user_already_exists">User already exists</string>
     <string name="ok">Okay</string>
+    <string name="top_stories">Top stories</string>
+    <string name="news">News</string>
+    <string name="profile">Profile</string>
 </resources>

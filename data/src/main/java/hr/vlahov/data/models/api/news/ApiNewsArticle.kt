@@ -6,11 +6,11 @@ data class ApiNewsArticle(
     @SerializedName("source")
     val source: ApiNewsSource,
     @SerializedName("author")
-    val author: String,
+    val author: String?,
     @SerializedName("title")
     val title: String,
     @SerializedName("description")
-    val description: String,
+    val description: String?,
     @SerializedName("url")
     val originalArticleUrl: String,
     @SerializedName("urlToImage")
@@ -18,5 +18,5 @@ data class ApiNewsArticle(
     @SerializedName("publishedAt")
     val publishedAt: String,
     @SerializedName("content")
-    val content: String,
+    val content: String?,
 )

@@ -8,8 +8,8 @@ import javax.inject.Inject
 class NewsUseCaseImpl @Inject constructor(
     private val newsRepository: NewsRepository,
 ) : NewsUseCase {
-    override suspend fun fetchTopHeadlines(): NewsArticlePage =
-        newsRepository.fetchTopHeadlines()
+    override suspend fun fetchTopHeadlines(keyword: String?, country: String): NewsArticlePage =
+        newsRepository.fetchTopHeadlines(keyword = keyword, country = country)
 
     override suspend fun fetchEverything(): NewsArticlePage =
         newsRepository.fetchEverything()

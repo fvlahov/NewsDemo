@@ -11,6 +11,7 @@ interface NewsApi : ApiService {
     @GET(NetworkContract.News.TOP_HEADLINES)
     suspend fun fetchTopHeadlines(
         @Query("q") searchQuery: String?,
+        @Query("country") country: String,
         @Query("pageSize") pageSize: Int,
         @Query("page") page: Int,
     ): ApiNewsListResponse

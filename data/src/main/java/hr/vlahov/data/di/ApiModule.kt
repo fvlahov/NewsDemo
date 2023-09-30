@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
 import hr.vlahov.data.BuildConfig
 import hr.vlahov.data.networking.AnonymousInterceptor
 import hr.vlahov.data.networking.AuthInterceptor
@@ -20,17 +20,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 object ApiModule {
 
     @Provides
     fun provideGson(): Gson = GsonBuilder().setLenient().create()
 
-    @Provides
-    fun provideAuthInterceptor(impl: AuthInterceptor): Interceptor = impl
 
     @Provides
     fun provideAnonymousInterceptor(impl: AnonymousInterceptor): Interceptor = impl
+
+    @Provides
+    fun provideAuthInterceptor(impl: AuthInterceptor): Interceptor = impl
 
     private fun provideOkHttpClient(requestInterceptor: Interceptor): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor()

@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,24 +27,16 @@ import hr.vlahov.newsdemo.base.errors.BaseError
 @Composable
 fun ErrorHandler(
     error: BaseError?,
-    customHandler: ((BaseError) -> Unit)? = null,
 ) {
     if (error == null)
         return
 
-    if (customHandler != null) {
-        customHandler(error)
-        return
-    }
-
 
     when (error.displayType) {
-        BaseError.ErrorDisplayType.DIALOG -> HandleDialog(error)
         BaseError.ErrorDisplayType.SNACKBAR -> HandleSnackbar(error)
+        BaseError.ErrorDisplayType.DIALOG -> HandleDialog(error)
         BaseError.ErrorDisplayType.NONE -> {}
     }
-
-
 }
 
 @Composable
@@ -80,7 +71,10 @@ private fun HandleSnackbar(error: BaseError) {
 
 @Composable
 private fun HandleDialog(error: BaseError) {
-    val isDialogVisible = rememberSaveable { mutableStateOf(true) }
+    val isDialogVisible = remember { mutableStateOf(true) }
+    LaunchedEffect(error) {
+        isDialogVisible.value = true
+    }
     if (!isDialogVisible.value)
         return
     AlertDialog(

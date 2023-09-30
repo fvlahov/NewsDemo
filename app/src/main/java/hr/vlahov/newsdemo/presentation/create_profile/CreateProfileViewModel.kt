@@ -19,7 +19,7 @@ class CreateProfileViewModel @Inject constructor(
     fun confirm(profileName: String) {
         launchIn {
             if (profileUseCase.doesProfileExist(profileName)) {
-                errors.emitError(GenericError(R.string.user_already_exists))
+                errors.emit(GenericError(R.string.user_already_exists))
                 return@launchIn
             }
 

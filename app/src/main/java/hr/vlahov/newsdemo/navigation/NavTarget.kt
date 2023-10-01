@@ -17,17 +17,17 @@ sealed class NavTarget(val destination: String) {
         ) {
             TOP_HEADLINES(
                 labelId = R.string.top_stories,
-                iconId = R.drawable.ic_play_arrow,
+                iconId = R.drawable.ic_local_fire,
                 destinationName = "topheadlinesscreen"
             ),
             ALL_NEWS(
                 labelId = R.string.news,
-                iconId = R.drawable.ic_play_arrow,
+                iconId = R.drawable.ic_newspaper,
                 destinationName = "allnewsscreen"
             ),
             PROFILE(
                 labelId = R.string.profile,
-                iconId = R.drawable.ic_play_arrow,
+                iconId = R.drawable.ic_person,
                 destinationName = "profilescreen"
             ),
         }

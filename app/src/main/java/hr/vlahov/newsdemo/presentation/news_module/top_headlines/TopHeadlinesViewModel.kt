@@ -1,10 +1,16 @@
 package hr.vlahov.newsdemo.presentation.news_module.top_headlines
 
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hr.vlahov.domain.models.news.NewsArticle
+import hr.vlahov.domain.models.news.NewsCategory
 import hr.vlahov.domain.usecases.NewsUseCase
 import hr.vlahov.newsdemo.base.BaseViewModel
 import hr.vlahov.newsdemo.navigation.navigator.Navigator
+import hr.vlahov.newsdemo.presentation.news_module.shared.NewsArticlePagingSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
@@ -15,28 +21,35 @@ class TopHeadlinesViewModel @Inject constructor(
     private val newsUseCase: NewsUseCase,
 ) : BaseViewModel() {
 
-    private val _uiState = MutableStateFlow<TopHeadlinesUIState>(TopHeadlinesUIState.Loading)
-    val uiState = _uiState.asStateFlow()
+    private var keyword: String? = null
+    private var selectedCategory: NewsCategory? = null
 
-    private val _topHeadlines = MutableStateFlow<List<NewsArticle>>(emptyList())
-    val topHeadlines = _topHeadlines.asStateFlow()
+    private val _headlinesCategories = MutableStateFlow(NewsCategory.values().toList())
+    val headlinesCategories = _headlinesCategories.asStateFlow()
 
-    init {
-        launchIn {
-            newsUseCase.fetchTopHeadlines(keyword = null).also {
-                _topHeadlines.merge(it.items)
+    val topHeadlines = Pager(
+        config = PagingConfig(pageSize = 20),
+        pagingSourceFactory = {
+            NewsArticlePagingSource { currentPage ->
+                newsUseCase.fetchTopHeadlines(
+                    keyword = keyword,
+                    category = selectedCategory,
+                    page = currentPage
+                )
             }
-            _uiState.emit(TopHeadlinesUIState.Idle)
         }
+    ).flow.cachedIn(viewModelScope)
+
+    fun setKeyword(keyword: String?) {
+        this.keyword = keyword
+    }
+
+    fun setSelectedCategory(category: NewsCategory) {
+        this.selectedCategory = category
     }
 
     fun navigateToSingleNewsArticle(newsArticle: NewsArticle) {
 
-    }
-
-    sealed class TopHeadlinesUIState {
-        object Loading : TopHeadlinesUIState()
-        object Idle : TopHeadlinesUIState()
     }
 
     private suspend fun <T> MutableStateFlow<List<T>>.merge(items: List<T>) {

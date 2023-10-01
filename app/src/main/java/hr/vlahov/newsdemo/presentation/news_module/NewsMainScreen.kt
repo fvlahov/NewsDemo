@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,10 +50,16 @@ fun NewsMainScreen(
                         icon = {
                             Icon(
                                 painter = painterResource(id = newsNavItem.iconId),
+                                tint = Color(0xFFF3F9FF),
                                 contentDescription = "Nav item icon"
                             )
                         },
-                        label = { Text(text = stringResource(id = newsNavItem.labelId)) },
+                        label = {
+                            Text(
+                                text = stringResource(id = newsNavItem.labelId),
+                                color = Color(0xFFE6E0E9)
+                            )
+                        },
                         colors = NavigationBarItemDefaults.colors(
                             indicatorColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         )

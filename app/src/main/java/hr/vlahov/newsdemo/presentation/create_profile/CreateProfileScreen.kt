@@ -35,7 +35,7 @@ import hr.vlahov.newsdemo.utils.ErrorHandler
 fun CreateProfileScreen(
     viewModel: CreateProfileViewModel = hiltViewModel(),
 ) {
-    val error = viewModel.errorsFlow.collectAsStateWithLifecycle()
+    val error = viewModel.errors.collectAsStateWithLifecycle()
     CreateProfileBody(
         onConfirm = viewModel::confirm,
         error = error.value

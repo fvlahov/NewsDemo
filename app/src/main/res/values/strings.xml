@@ -8,4 +8,12 @@
     <string name="top_stories">Top stories</string>
     <string name="news">News</string>
     <string name="profile">Profile</string>
+    <string name="change_profile">Change profile</string>
+    <string name="hello_val">Hello %1$s</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="liked_articles">Liked articles</string>
+    <string name="see_all">See all</string>
+    <string name="no_liked_news_articles">No liked news articles</string>
 </resources>

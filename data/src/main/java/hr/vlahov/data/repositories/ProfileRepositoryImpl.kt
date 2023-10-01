@@ -1,8 +1,10 @@
 package hr.vlahov.data.repositories
 
 import hr.vlahov.data.database.AppDatabase
+import hr.vlahov.data.models.converters.toNewsArticles
 import hr.vlahov.data.models.converters.toProfileEntity
 import hr.vlahov.data.models.converters.toProfiles
+import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.profile.Profile
 import hr.vlahov.domain.repositories.CredentialLocalRepository
 import hr.vlahov.domain.repositories.ProfileRepository
@@ -18,7 +20,11 @@ class ProfileRepositoryImpl @Inject constructor(
     override val allProfiles: Flow<List<Profile>> = database.profileDao().getAll()
         .map { it.toProfiles() }
 
-    override suspend fun fetchCurrentProfile(): Profile? {
+    override val likedNewsArticles: Flow<List<NewsArticle>> = database.newsArticleDao()
+        .getAllForProfile(profileName = fetchCurrentProfile()?.name.orEmpty())
+        .map { it.toNewsArticles() }
+
+    override fun fetchCurrentProfile(): Profile? {
         return credentialLocalRepository.fetchCurrentProfileName()?.let { name ->
             Profile(name = name)
         }

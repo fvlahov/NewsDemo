@@ -12,7 +12,7 @@ class CredentialLocalRepositoryImpl @Inject constructor(
         sharedPreferences.getString(PROFILE_NAME_PREF_KEY, null)
 
 
-    override fun saveCurrentProfileName(profileName: String) =
+    override fun saveCurrentProfileName(profileName: String?) =
         sharedPreferences.edit {
             putString(PROFILE_NAME_PREF_KEY, profileName)
         }

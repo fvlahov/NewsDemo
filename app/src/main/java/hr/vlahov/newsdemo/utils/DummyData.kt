@@ -17,5 +17,45 @@ val dummyNewsArticles = listOf(
         content = "A somewhat longer content of the description with a lot of 'wait for its'",
         originalArticleUrl = "",
         imageUrl = null
+    ),
+    NewsArticle(
+        author = "Ante Antić",
+        title = "Something shocking happened, be afraid!",
+        description = "A short description of the shocking titles A short description of the shocking titles A short description of the shocking titles A short description of the shocking titles",
+        content = "A somewhat longer content of the description with a lot of 'wait for its'",
+        originalArticleUrl = "",
+        imageUrl = null
+    ),
+    NewsArticle(
+        author = "Ante Antić",
+        title = "Something shocking happened, be afraid!",
+        description = "A short description of the shocking titles A short description of the shocking titles A short description of the shocking titles A short description of the shocking titles",
+        content = "A somewhat longer content of the description with a lot of 'wait for its'",
+        originalArticleUrl = "",
+        imageUrl = null
+    ),
+    NewsArticle(
+        author = "Ante Antić",
+        title = "Something shocking happened, be afraid!",
+        description = "A short description of the shocking titles A short description of the shocking titles A short description of the shocking titles A short description of the shocking titles",
+        content = "A somewhat longer content of the description with a lot of 'wait for its'",
+        originalArticleUrl = "",
+        imageUrl = null
+    ),
+    NewsArticle(
+        author = "Ante Antić",
+        title = "Something shocking happened, be afraid!",
+        description = "A short description of the shocking titles A short description of the shocking titles A short description of the shocking titles A short description of the shocking titles",
+        content = "A somewhat longer content of the description with a lot of 'wait for its'",
+        originalArticleUrl = "",
+        imageUrl = null
+    ),
+    NewsArticle(
+        author = "Ante Antić",
+        title = "Something shocking happened, be afraid!",
+        description = "A short description of the shocking titles A short description of the shocking titles A short description of the shocking titles A short description of the shocking titles",
+        content = "A somewhat longer content of the description with a lot of 'wait for its'",
+        originalArticleUrl = "",
+        imageUrl = null
     )
 )

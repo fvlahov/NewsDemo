@@ -1,5 +1,6 @@
 package hr.vlahov.data.usecases
 
+import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.profile.Profile
 import hr.vlahov.domain.repositories.CredentialLocalRepository
 import hr.vlahov.domain.repositories.ProfileRepository
@@ -13,6 +14,8 @@ class ProfileUseCaseImpl @Inject constructor(
 ) : ProfileUseCase {
     override val allProfiles: Flow<List<Profile>> = profileRepository.allProfiles
 
+    override val likedNewsArticles: Flow<List<NewsArticle>> = profileRepository.likedNewsArticles
+
     override suspend fun fetchCurrentProfile(): Profile? =
         profileRepository.fetchCurrentProfile()
 
@@ -24,6 +27,10 @@ class ProfileUseCaseImpl @Inject constructor(
 
     override suspend fun signInAsProfile(profileName: String) {
         credentialLocalRepository.saveCurrentProfileName(profileName)
+    }
+
+    override suspend fun signOut() {
+        credentialLocalRepository.saveCurrentProfileName(null)
     }
 
     override suspend fun isProfileSelected(): Boolean =

@@ -91,7 +91,18 @@ fun NewsMainScreen(
                 NavTarget.NewsModule.NewsNavItems.values().forEach { newsNavItem ->
                     NavigationBarItem(
                         selected = currentRoute == newsNavItem.destinationName,
-                        onClick = { navController.navigate(newsNavItem.destinationName) },
+                        onClick = {
+                            try {
+                                navController.getBackStackEntry(newsNavItem.destinationName).destination.route?.also {
+                                    navController.popBackStack(route = it, inclusive = false)
+                                }
+
+                            } catch (e: Exception) {
+                                navController.navigate(newsNavItem.destinationName) {
+                                    this.launchSingleTop = true
+                                }
+                            }
+                        },
                         icon = {
                             Icon(
                                 painter = painterResource(id = newsNavItem.iconId),
@@ -116,8 +127,8 @@ fun NewsMainScreen(
         topBar = {
             AnimatedVisibility(
                 visible = currentRoute != NavTarget.NewsModule.NewsNavItems.PROFILE.destinationName,
-                enter = slideInVertically(),
-                exit = slideOutVertically()
+                enter = slideInVertically(initialOffsetY = { -it }),
+                exit = slideOutVertically(targetOffsetY = { -it })
             ) {
                 TopAppBar(
                     title = { },

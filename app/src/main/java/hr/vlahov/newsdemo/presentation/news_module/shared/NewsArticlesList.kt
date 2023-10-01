@@ -1,10 +1,8 @@
 package hr.vlahov.newsdemo.presentation.news_module.shared
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -52,35 +50,35 @@ fun NewsArticlesList(
         onRefresh = { items.refresh() }
     )
 
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .pullRefresh(pullRefreshState)
-    ) {
-        item {
-            AnimatedVisibility(visible = items.isLoading()) {
-                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+    Box {
+        PullRefreshIndicator(
+            refreshing = items.isRefreshing(),
+            state = pullRefreshState,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .zIndex(5f)
+        )
+
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .pullRefresh(pullRefreshState)
+        ) {
+            item {
+                AnimatedVisibility(visible = items.isLoading()) {
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                }
             }
-        }
-        item {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .zIndex(5f)
-            ) {
-                PullRefreshIndicator(
-                    refreshing = items.isRefreshing(),
-                    state = pullRefreshState,
+            item {
+
+            }
+            items(items, key = { it.originalArticleUrl }) { newsArticle ->
+                NewsArticleItem(
+                    newsArticle = newsArticle,
+                    onItemClick = { onItemClick(newsArticle) },
+                    modifier = Modifier.padding(16.dp, 8.dp)
                 )
             }
-        }
-        items(items, key = { it.originalArticleUrl }) { newsArticle ->
-            NewsArticleItem(
-                newsArticle = newsArticle,
-                onItemClick = { onItemClick(newsArticle) },
-                modifier = Modifier.padding(16.dp, 8.dp)
-            )
         }
     }
 }
@@ -110,9 +108,11 @@ private fun NewsArticleItem(
                 .crossfade(true)
                 .build()
 
-            Box(modifier = Modifier
-                .height(200.dp)
-                .fillMaxWidth()) {
+            Box(
+                modifier = Modifier
+                    .height(200.dp)
+                    .fillMaxWidth()
+            ) {
                 AsyncImage(
                     model = model,
                     contentDescription = newsArticle.title,

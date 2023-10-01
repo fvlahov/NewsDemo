@@ -26,7 +26,7 @@ private val darkColorScheme = darkColorScheme(
     onPrimaryContainer = LightBlue,
     secondaryContainer = LightBlue,
     onSecondaryContainer = Color.White,
-    surface = Color.White
+    surface = DarkerBlue
 )
 
 @Composable

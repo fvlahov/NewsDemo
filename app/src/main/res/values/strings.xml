@@ -16,4 +16,10 @@
     <string name="liked_articles">Liked articles</string>
     <string name="see_all">See all</string>
     <string name="no_liked_news_articles">No liked news articles</string>
+    <string name="search_here">Search here</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="select_date_range">Select date range</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
 </resources>

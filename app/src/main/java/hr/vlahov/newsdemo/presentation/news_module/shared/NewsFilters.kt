@@ -17,7 +17,12 @@ interface NewsFilters {
      */
     enum class OrderBy {
         ASCENDING,
-        DESCENDING
+        DESCENDING;
+
+        fun toggle() = when (this) {
+            ASCENDING -> DESCENDING
+            DESCENDING -> ASCENDING
+        }
     }
 
     suspend fun setSearchQuery(searchQuery: String?)

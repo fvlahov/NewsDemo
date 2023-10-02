@@ -22,4 +22,5 @@
     <string name="select_date_range">Select date range</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+    <string name="sort_order">Sort order</string>
 </resources>

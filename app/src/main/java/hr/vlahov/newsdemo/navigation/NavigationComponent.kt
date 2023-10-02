@@ -13,9 +13,6 @@ import hr.vlahov.newsdemo.navigation.navigator.Navigator
 import hr.vlahov.newsdemo.presentation.choose_profile.ChooseProfileScreen
 import hr.vlahov.newsdemo.presentation.create_profile.CreateProfileScreen
 import hr.vlahov.newsdemo.presentation.news_module.NewsMainScreen
-import hr.vlahov.newsdemo.presentation.news_module.everything.AllNewsScreen
-import hr.vlahov.newsdemo.presentation.news_module.profile.ProfileScreen
-import hr.vlahov.newsdemo.presentation.news_module.top_headlines.TopHeadlinesScreen
 import hr.vlahov.newsdemo.presentation.splash.SplashScreen
 
 @Composable
@@ -57,29 +54,12 @@ fun NavGraphBuilder.addMainGraph() {
                     towards = AnimatedContentTransitionScope.SlideDirection.Left,
                     animationSpec = tween(700)
                 )
-            }) {
+            }
+        ) {
             CreateProfileScreen()
         }
         composable(NavTarget.NewsModule.destination) {
             NewsMainScreen()
-        }
-    }
-}
-
-fun NavGraphBuilder.addNewsArticlesGraph() {
-    navigation(
-        startDestination = NavTarget.NewsModule.NewsNavItems.TOP_HEADLINES.destinationName,
-        route = ModuleRoutes.NewsMainModule.route
-    ) {
-
-        composable(NavTarget.NewsModule.NewsNavItems.TOP_HEADLINES.destinationName) {
-            TopHeadlinesScreen()
-        }
-        composable(NavTarget.NewsModule.NewsNavItems.ALL_NEWS.destinationName) {
-            AllNewsScreen()
-        }
-        composable(NavTarget.NewsModule.NewsNavItems.PROFILE.destinationName) {
-            ProfileScreen()
         }
     }
 }

@@ -13,6 +13,7 @@ fun TopHeadlinesScreen(
 
     NewsArticlesList(
         items = topHeadlines,
-        onItemClick = { viewModel.navigateToSingleNewsArticle(it) },
+        onItemClick = viewModel::navigateToSingleNewsArticle,
+        onNewsArticleLikedChanged = viewModel::toggleLikeNewsArticle
     )
 }

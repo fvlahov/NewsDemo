@@ -16,7 +16,7 @@ import androidx.room.PrimaryKey
 )
 data class LikedNewsArticleEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val id: Long = 0L,
     @Embedded
     val newsArticle: NewsArticleEntity,
     val profileName: String,

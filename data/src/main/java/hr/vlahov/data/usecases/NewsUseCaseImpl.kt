@@ -1,5 +1,6 @@
 package hr.vlahov.data.usecases
 
+import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.news.NewsArticlePage
 import hr.vlahov.domain.models.news.NewsCategory
 import hr.vlahov.domain.repositories.NewsRepository
@@ -27,4 +28,8 @@ class NewsUseCaseImpl @Inject constructor(
 
     override suspend fun fetchEverything(): NewsArticlePage =
         newsRepository.fetchEverything()
+
+    override suspend fun toggleLikeNewsArticle(newsArticle: NewsArticle, isLiked: Boolean) {
+        newsRepository.toggleLikeNewsArticle(newsArticle, isLiked)
+    }
 }

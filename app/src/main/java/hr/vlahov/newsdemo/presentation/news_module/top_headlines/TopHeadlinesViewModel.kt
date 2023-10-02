@@ -52,6 +52,12 @@ class TopHeadlinesViewModel @Inject constructor(
 
     }
 
+    fun toggleLikeNewsArticle(newsArticle: NewsArticle, isLiked: Boolean) {
+        launchIn {
+            newsUseCase.toggleLikeNewsArticle(newsArticle, isLiked)
+        }
+    }
+
     private suspend fun <T> MutableStateFlow<List<T>>.merge(items: List<T>) {
         this.emit(this.value + items)
     }

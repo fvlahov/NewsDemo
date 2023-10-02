@@ -22,7 +22,7 @@ import hr.vlahov.data.models.database.ProfileEntity
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun profileDao(): ProfileDao
-    abstract fun newsArticleDao(): LikedNewsArticleDao
+    abstract fun likedNewsArticleDao(): LikedNewsArticleDao
 
     companion object {
         fun build(context: Context): AppDatabase =

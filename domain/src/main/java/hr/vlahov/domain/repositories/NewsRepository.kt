@@ -1,5 +1,6 @@
 package hr.vlahov.domain.repositories
 
+import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.news.NewsArticlePage
 import hr.vlahov.domain.models.news.NewsCategory
 
@@ -13,4 +14,6 @@ interface NewsRepository {
     ): NewsArticlePage
 
     suspend fun fetchEverything(): NewsArticlePage
+
+    suspend fun toggleLikeNewsArticle(newsArticle: NewsArticle, isLiked: Boolean)
 }

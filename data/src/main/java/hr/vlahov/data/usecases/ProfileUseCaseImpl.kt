@@ -19,8 +19,10 @@ class ProfileUseCaseImpl @Inject constructor(
     override suspend fun fetchCurrentProfile(): Profile? =
         profileRepository.fetchCurrentProfile()
 
-    override suspend fun createNewProfile(profile: Profile) =
+    override suspend fun createNewProfile(profile: Profile) {
         profileRepository.createNewProfile(profile)
+        signInAsProfile(profile.name)
+    }
 
     override suspend fun doesProfileExist(profileName: String): Boolean =
         profileRepository.doesProfileExist(profileName)

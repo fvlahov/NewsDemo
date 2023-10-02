@@ -4,22 +4,28 @@ import hr.vlahov.data.models.api.news.ApiNewsArticle
 import hr.vlahov.data.models.api.news.ApiNewsCategory
 import hr.vlahov.data.models.api.news.ApiNewsListResponse
 import hr.vlahov.data.models.database.LikedNewsArticleEntity
+import hr.vlahov.data.models.database.NewsArticleEntity
 import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.news.NewsArticlePage
 import hr.vlahov.domain.models.news.NewsCategory
 
-fun ApiNewsArticle.toNewsArticle() = NewsArticle(
+suspend fun ApiNewsArticle.toNewsArticle(
+    isNewsArticleLiked: suspend (ApiNewsArticle) -> Boolean,
+) = NewsArticle(
     author = author,
     title = title,
     description = description,
     content = content,
     originalArticleUrl = originalArticleUrl,
-    imageUrl = imageUrl
+    imageUrl = imageUrl,
+    isLiked = isNewsArticleLiked(this)
 )
 
-fun ApiNewsListResponse.toNewsArticlePage() = NewsArticlePage(
+suspend fun ApiNewsListResponse.toNewsArticlePage(
+    isNewsArticleLiked: suspend (ApiNewsArticle) -> Boolean,
+) = NewsArticlePage(
     totalItems = totalResults,
-    items = articles.map { it.toNewsArticle() }
+    items = articles.map { it.toNewsArticle(isNewsArticleLiked) }
 )
 
 fun NewsCategory.toApiNewsCategory() = when (this) {
@@ -38,7 +44,17 @@ fun LikedNewsArticleEntity.toNewsArticle() = NewsArticle(
     description = newsArticle.description,
     content = newsArticle.content,
     originalArticleUrl = newsArticle.originalArticleUrl,
-    imageUrl = newsArticle.imageUrl
+    imageUrl = newsArticle.imageUrl,
+    isLiked = true
 )
 
 fun Collection<LikedNewsArticleEntity>.toNewsArticles() = map { it.toNewsArticle() }
+
+fun NewsArticle.toNewsArticleEntity() = NewsArticleEntity(
+    originalArticleUrl = originalArticleUrl,
+    imageUrl = imageUrl,
+    author = author,
+    title = title,
+    description = description,
+    content = content
+)

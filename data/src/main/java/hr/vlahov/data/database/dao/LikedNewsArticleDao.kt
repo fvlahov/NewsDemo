@@ -10,4 +10,10 @@ interface LikedNewsArticleDao : CRUDDao<LikedNewsArticleEntity> {
 
     @Query("SELECT * FROM LikedNewsArticles WHERE profileName = :profileName")
     fun getAllForProfile(profileName: String): Flow<List<LikedNewsArticleEntity>>
+
+    @Query("SELECT * FROM LikedNewsArticles WHERE originalArticleUrl = :originalArticleUrl LIMIT 1")
+    suspend fun getLikedArticleByOriginalArticleUrl(originalArticleUrl: String): LikedNewsArticleEntity?
+
+    @Query("DELETE FROM LikedNewsArticles WHERE originalArticleUrl = :originalArticleUrl")
+    suspend fun deleteLikedArticleByOriginalArticleUrl(originalArticleUrl: String)
 }

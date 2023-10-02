@@ -20,7 +20,7 @@ class ProfileRepositoryImpl @Inject constructor(
     override val allProfiles: Flow<List<Profile>> = database.profileDao().getAll()
         .map { it.toProfiles() }
 
-    override val likedNewsArticles: Flow<List<NewsArticle>> = database.newsArticleDao()
+    override val likedNewsArticles: Flow<List<NewsArticle>> = database.likedNewsArticleDao()
         .getAllForProfile(profileName = fetchCurrentProfile()?.name.orEmpty())
         .map { it.toNewsArticles() }
 

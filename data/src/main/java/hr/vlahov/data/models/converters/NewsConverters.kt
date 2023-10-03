@@ -3,11 +3,15 @@ package hr.vlahov.data.models.converters
 import hr.vlahov.data.models.api.news.ApiNewsArticle
 import hr.vlahov.data.models.api.news.ApiNewsCategory
 import hr.vlahov.data.models.api.news.ApiNewsListResponse
+import hr.vlahov.data.models.api.news.ApiNewsSource
+import hr.vlahov.data.models.api.news.ApiNewsSourceResponse
 import hr.vlahov.data.models.database.LikedNewsArticleEntity
 import hr.vlahov.data.models.database.NewsArticleEntity
+import hr.vlahov.data.models.database.NewsSourceEntity
 import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.news.NewsArticlePage
 import hr.vlahov.domain.models.news.NewsCategory
+import hr.vlahov.domain.models.news.NewsSource
 
 suspend fun ApiNewsArticle.toNewsArticle(
     isNewsArticleLiked: suspend (ApiNewsArticle) -> Boolean,
@@ -57,4 +61,41 @@ fun NewsArticle.toNewsArticleEntity() = NewsArticleEntity(
     title = title,
     description = description,
     content = content
+)
+
+fun NewsArticleEntity.toNewsArticle() = NewsArticle(
+    author = author,
+    title = title,
+    description = description,
+    content = content,
+    originalArticleUrl = originalArticleUrl,
+    imageUrl = imageUrl, isLiked = false
+)
+
+fun ApiNewsSource.toNewsSource() = NewsSource(
+    id = id,
+    name = name,
+    description = description,
+    url = url,
+    country = country
+)
+
+fun NewsSourceEntity.toNewsSource() = NewsSource(
+    id = id,
+    name = name,
+    description = description,
+    url = url,
+    country = country
+)
+
+fun ApiNewsSourceResponse.toNewsSources() = sources.map { it.toNewsSource() }
+
+fun Collection<NewsSourceEntity>.toNewsSources() = map { it.toNewsSource() }
+
+fun NewsSource.toNewsSourceEntity() = NewsSourceEntity(
+    id = id,
+    name = name,
+    description = description,
+    url = url,
+    country = country
 )

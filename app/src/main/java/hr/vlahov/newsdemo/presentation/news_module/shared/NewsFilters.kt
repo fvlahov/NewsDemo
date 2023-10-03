@@ -1,5 +1,6 @@
 package hr.vlahov.newsdemo.presentation.news_module.shared
 
+import hr.vlahov.domain.models.news.NewsSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -9,6 +10,7 @@ interface NewsFilters {
     val dateFrom: StateFlow<Long?>
     val dateTo: StateFlow<Long?>
     val orderBy: StateFlow<OrderBy>
+    val selectedNewsSources: StateFlow<List<NewsSource>>
 
     /**
      * Orders the news ASCENDING or DESCENDING by publish date
@@ -28,6 +30,7 @@ interface NewsFilters {
     suspend fun setSearchQuery(searchQuery: String?)
     suspend fun setDateRange(dateFrom: Long?, dateTo: Long?)
     suspend fun setNewsOrder(orderBy: OrderBy)
+    suspend fun selectNewsSources(newsSources: List<NewsSource>)
 }
 
 class NewsFiltersImpl @Inject constructor() : NewsFilters {
@@ -38,6 +41,8 @@ class NewsFiltersImpl @Inject constructor() : NewsFilters {
     override val dateTo = MutableStateFlow<Long?>(null)
 
     override val orderBy = MutableStateFlow(NewsFilters.OrderBy.DESCENDING)
+
+    override val selectedNewsSources = MutableStateFlow<List<NewsSource>>(emptyList())
 
     override suspend fun setSearchQuery(searchQuery: String?) {
         this.searchQuery.emit(searchQuery)
@@ -50,5 +55,9 @@ class NewsFiltersImpl @Inject constructor() : NewsFilters {
 
     override suspend fun setNewsOrder(orderBy: NewsFilters.OrderBy) {
         this.orderBy.emit(orderBy)
+    }
+
+    override suspend fun selectNewsSources(newsSources: List<NewsSource>) {
+        this.selectedNewsSources.emit(newsSources)
     }
 }

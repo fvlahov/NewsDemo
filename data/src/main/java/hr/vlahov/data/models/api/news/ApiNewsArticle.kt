@@ -3,8 +3,6 @@ package hr.vlahov.data.models.api.news
 import com.google.gson.annotations.SerializedName
 
 data class ApiNewsArticle(
-    @SerializedName("source")
-    val source: ApiNewsSource,
     @SerializedName("author")
     val author: String?,
     @SerializedName("title")

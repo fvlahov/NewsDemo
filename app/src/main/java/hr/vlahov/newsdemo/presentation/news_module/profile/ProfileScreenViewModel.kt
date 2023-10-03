@@ -1,6 +1,7 @@
 package hr.vlahov.newsdemo.presentation.news_module.profile
 
 import dagger.hilt.android.lifecycle.HiltViewModel
+import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.profile.Profile
 import hr.vlahov.domain.usecases.ProfileUseCase
 import hr.vlahov.newsdemo.base.BaseViewModel
@@ -35,5 +36,13 @@ class ProfileScreenViewModel @Inject constructor(
                 popUpToInclusive(NavTarget.NewsModule.destination)
             }
         }
+    }
+
+    fun navigateToAllLikedArticles() {
+        navigator.navigateNewsTo(NavTarget.NewsModule.LikedNewsArticles)
+    }
+
+    fun navigateToLikedArticle(newsArticle: NewsArticle) {
+
     }
 }

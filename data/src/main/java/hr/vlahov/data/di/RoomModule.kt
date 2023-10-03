@@ -15,4 +15,7 @@ object RoomModule {
     @Provides
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
         AppDatabase.build(context)
+
+    @Provides
+    fun provideLikedNewsArticlesDao(database: AppDatabase) = database.likedNewsArticleDao()
 }

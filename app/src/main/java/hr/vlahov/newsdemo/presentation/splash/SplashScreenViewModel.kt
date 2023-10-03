@@ -1,6 +1,7 @@
 package hr.vlahov.newsdemo.presentation.splash
 
 import dagger.hilt.android.lifecycle.HiltViewModel
+import hr.vlahov.domain.usecases.NewsUseCase
 import hr.vlahov.domain.usecases.ProfileUseCase
 import hr.vlahov.newsdemo.base.BaseViewModel
 import hr.vlahov.newsdemo.navigation.NavTarget
@@ -13,10 +14,13 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashScreenViewModel @Inject constructor(
     private val profileUseCase: ProfileUseCase,
+    private val newsUseCase: NewsUseCase,
     private val navigator: Navigator,
 ) : BaseViewModel() {
     init {
         launchIn {
+            newsUseCase.preFetchNewsSources()
+
             delay(2000)
             //Navigate to CreateNewProfile if list of profiles is empty
             profileUseCase.allProfiles.stateIn(this).value.takeIf { it.isEmpty() }?.run {

@@ -22,8 +22,8 @@ fun shimmerBrush(
     showShimmer: Boolean,
     shimmerColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     speed: Float = 1f,
+    delayBetweenEachShimmerMillis: Int = 0,
 ): Brush {
-    val targetValue = 1000 * speed
     return if (showShimmer) {
         val shimmerColors = listOf(
             shimmerColor.copy(alpha = 0.6f),
@@ -34,9 +34,13 @@ fun shimmerBrush(
         val transition = rememberInfiniteTransition(label = "")
         val translateAnimation = transition.animateFloat(
             initialValue = 0f,
-            targetValue = targetValue,
+            targetValue = 1000f,
             animationSpec = infiniteRepeatable(
-                animation = tween(800), repeatMode = RepeatMode.Reverse
+                animation = tween(
+                    durationMillis = (800 * (1 / speed)).toInt(),
+                    delayMillis = delayBetweenEachShimmerMillis
+                ),
+                repeatMode = RepeatMode.Reverse
             ), label = ""
         )
         Brush.linearGradient(
@@ -56,10 +60,16 @@ fun shimmerBrush(
 fun Modifier.shimmerBackground(
     showShimmer: Boolean,
     shape: Shape = RoundedCornerShape(32.dp),
+    speed: Float = 1f,
+    delayBetweenEachShimmerMillis: Int = 0,
     alpha: Float = 1f,
 ): Modifier = composed {
     this.background(
-        brush = shimmerBrush(showShimmer = showShimmer),
+        brush = shimmerBrush(
+            showShimmer = showShimmer,
+            speed = speed,
+            delayBetweenEachShimmerMillis = delayBetweenEachShimmerMillis
+        ),
         shape = shape,
         alpha = alpha
     )

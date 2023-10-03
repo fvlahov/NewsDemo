@@ -27,12 +27,8 @@ class NewsArticlePagingSource(
 
             //426 - Upgrade required, meaning we've reached the page limit from the API
             //429 - Upgrade required, meaning we've reached the limit of requests (100 requests in 24 hours)
-            if (exception.code() == 426 || exception.code() == 429)
-                return LoadResult.Page(
-                    data = emptyList(),
-                    prevKey = if (currentPage == 1) null else currentPage - 1,
-                    nextKey = null
-                )
+            if (exception.code() == 429)
+                return LoadResult.Error(TooManyRequestsException)
 
             return LoadResult.Error(exception)
         }

@@ -1,38 +1,42 @@
-package hr.vlahov.newsdemo.presentation.news_module.top_headlines
+package hr.vlahov.newsdemo.presentation.news_module.liked_news_articles
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
+import hr.vlahov.data.database.dao.LikedNewsArticleDao
+import hr.vlahov.data.models.converters.toNewsArticle
 import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.usecases.NewsUseCase
+import hr.vlahov.domain.usecases.ProfileUseCase
 import hr.vlahov.newsdemo.base.BaseViewModel
 import hr.vlahov.newsdemo.navigation.navigator.Navigator
-import hr.vlahov.newsdemo.presentation.news_module.shared.NewsArticlePagingSource
-import hr.vlahov.newsdemo.presentation.news_module.shared.NewsFilters
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
-class TopHeadlinesViewModel @Inject constructor(
+class LikedNewsArticlesViewModel @Inject constructor(
     private val navigator: Navigator,
     private val newsUseCase: NewsUseCase,
-    private val newsFilters: NewsFilters,
+    private val profileUseCase: ProfileUseCase,
+    private val likedNewsArticleDao: LikedNewsArticleDao,
 ) : BaseViewModel() {
 
-    val topHeadlines = Pager(
+    val likedNewsArticles = Pager(
         config = PagingConfig(pageSize = 20),
         pagingSourceFactory = {
-            NewsArticlePagingSource { currentPage ->
-                newsUseCase.fetchTopHeadlines(
-                    keyword = newsFilters.searchQuery.value,
-                    sources = newsFilters.selectedNewsSources.value,
-                    page = currentPage
-                )
+            runBlocking {
+                likedNewsArticleDao
+                    .getLikedNewsArticlesForProfilePagingSource(profileName = profileUseCase.fetchCurrentProfile()!!.name)
             }
         }
-    ).flow.cachedIn(viewModelScope)
+    )
+        .flow
+        .map { pagingData -> pagingData.map { it.toNewsArticle() } }
+        .cachedIn(viewModelScope)
 
     fun navigateToSingleNewsArticle(newsArticle: NewsArticle) {
 
@@ -42,9 +46,5 @@ class TopHeadlinesViewModel @Inject constructor(
         launchIn {
             newsUseCase.toggleLikeNewsArticle(newsArticle, isLiked)
         }
-    }
-
-    private suspend fun <T> MutableStateFlow<List<T>>.merge(items: List<T>) {
-        this.emit(this.value + items)
     }
 }

@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
@@ -32,14 +33,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import hr.vlahov.domain.models.news.NewsSource
 import hr.vlahov.newsdemo.navigation.ModuleRoutes
 import hr.vlahov.newsdemo.navigation.NavTarget
 import hr.vlahov.newsdemo.navigation.subscribeToNavigation
 import hr.vlahov.newsdemo.presentation.news_module.everything.AllNewsScreen
+import hr.vlahov.newsdemo.presentation.news_module.liked_news_articles.LikedNewsArticlesScreen
 import hr.vlahov.newsdemo.presentation.news_module.profile.ProfileScreen
 import hr.vlahov.newsdemo.presentation.news_module.shared.NewsFilters
 import hr.vlahov.newsdemo.presentation.news_module.top_headlines.TopHeadlinesScreen
 import hr.vlahov.newsdemo.ui.theme.NewsDemoTheme
+import hr.vlahov.newsdemo.utils.dummyNewsSources
 
 @Composable
 fun NewsMainScreen(
@@ -56,8 +60,14 @@ fun NewsMainScreen(
     val currentBackstackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = currentBackstackEntry?.destination?.route
 
+    val newsSources = viewModel.newsSources.collectAsStateWithLifecycle(emptyList()).value
+    val selectedNewsSources =
+        viewModel.selectedNewsSources.collectAsStateWithLifecycle(emptyList()).value
+
     NewsMainBody(
         currentRoute = currentRoute,
+        allNewsSources = newsSources,
+        selectedNewsSources = selectedNewsSources,
         onNavigateTo = { newsNavItem ->
             try {
                 //GetBackStackEntry throws exception if there is no backstack entry with route
@@ -73,6 +83,7 @@ fun NewsMainScreen(
         onSearchQueryCommitted = viewModel::setSearchQuery,
         onDateRangeConfirmed = viewModel::setDateRange,
         onNewsOrderChanged = viewModel::setNewsOrder,
+        onNewsSourcesChanged = viewModel::selectNewsSources
     ) { paddingValues ->
         NavHost(
             navController = navController,
@@ -87,6 +98,9 @@ fun NewsMainScreen(
 @Composable
 private fun NewsMainBody(
     currentRoute: String?,
+    allNewsSources: List<NewsSource>,
+    selectedNewsSources: List<NewsSource>,
+    onNewsSourcesChanged: (selectedNewsSources: List<NewsSource>) -> Unit,
     onNavigateTo: (NavTarget.NewsModule.NewsNavItems) -> Unit,
     onSearchQueryCommitted: (String?) -> Unit,
     onDateRangeConfirmed: (Long?, Long?) -> Unit,
@@ -102,14 +116,20 @@ private fun NewsMainBody(
         },
         topBar = {
             AnimatedVisibility(
-                visible = currentRoute != NavTarget.NewsModule.NewsNavItems.PROFILE.destinationName,
+                visible = listOf(
+                    NavTarget.NewsModule.NewsNavItems.TOP_HEADLINES.destinationName,
+                    NavTarget.NewsModule.NewsNavItems.ALL_NEWS.destinationName
+                ).contains(currentRoute),
                 enter = fadeIn(animationSpec = tween(delayMillis = 250)),
                 exit = fadeOut(animationSpec = tween(delayMillis = 250))
             ) {
                 NewsMainTopAppBar(
+                    allNewsSources = allNewsSources,
+                    selectedNewsSources = selectedNewsSources,
                     onSearchQueryCommitted = onSearchQueryCommitted,
                     onDateRangeConfirmed = onDateRangeConfirmed,
-                    onNewsOrderChanged = onNewsOrderChanged
+                    onNewsOrderChanged = onNewsOrderChanged,
+                    onNewsSourcesChanged = onNewsSourcesChanged
                 )
             }
 
@@ -200,6 +220,16 @@ fun NavGraphBuilder.addNewsArticlesGraph() {
         ) {
             ProfileScreen()
         }
+
+        composable(
+            route = NavTarget.NewsModule.LikedNewsArticles.destination,
+            enterTransition = enterTransition,
+            exitTransition = exitTransition,
+            popEnterTransition = enterTransition,
+            popExitTransition = exitTransition
+        ) {
+            LikedNewsArticlesScreen()
+        }
     }
 }
 
@@ -209,10 +239,13 @@ private fun NewsMainScreenPreview() {
     NewsDemoTheme {
         NewsMainBody(
             currentRoute = NavTarget.NewsModule.NewsNavItems.TOP_HEADLINES.destinationName,
+            allNewsSources = dummyNewsSources,
+            selectedNewsSources = dummyNewsSources.take(2),
             onNavigateTo = {},
             onSearchQueryCommitted = {},
             onDateRangeConfirmed = { _, _ -> },
             onNewsOrderChanged = {},
+            onNewsSourcesChanged = {},
             content = { }
         )
     }

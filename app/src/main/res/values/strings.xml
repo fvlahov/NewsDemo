@@ -23,4 +23,8 @@
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <string name="sort_order">Sort order</string>
+    <string name="see_all_val">See all %1$s</string>
+    <string name="too_many_requests">There were too many requests, please try again later.</string>
+    <string name="sources">Sources</string>
+    <string name="select_sources">Select sources</string>
 </resources>

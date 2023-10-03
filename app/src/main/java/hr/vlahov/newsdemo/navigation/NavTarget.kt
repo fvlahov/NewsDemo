@@ -31,6 +31,8 @@ sealed class NavTarget(val destination: String) {
                 destinationName = "profilescreen"
             ),
         }
+
+        object LikedNewsArticles : NavTarget("likednewsarticlesscreen")
     }
 }
 

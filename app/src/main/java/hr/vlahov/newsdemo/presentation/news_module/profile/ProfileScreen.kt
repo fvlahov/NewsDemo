@@ -10,11 +10,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,19 +26,29 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import coil.size.Size
 import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.profile.Profile
 import hr.vlahov.newsdemo.R
 import hr.vlahov.newsdemo.ui.theme.NewsDemoTheme
+import hr.vlahov.newsdemo.utils.buildAsyncImageModel
 import hr.vlahov.newsdemo.utils.dialogs.GenericAlertDialog
 import hr.vlahov.newsdemo.utils.dialogs.rememberDialogState
 import hr.vlahov.newsdemo.utils.dummyNewsArticles
@@ -54,8 +64,8 @@ fun ProfileScreen(
     ProfileBody(
         profile = profile,
         likedArticles = likedArticles,
-        onSeeAllLikedArticlesClicked = { /*TODO*/ },
-        onLikedArticleClicked = {},
+        onSeeAllLikedArticlesClicked = viewModel::navigateToAllLikedArticles,
+        onLikedArticleClicked = viewModel::navigateToLikedArticle,
         onChangeUserClicked = viewModel::changeProfile
     )
 }
@@ -154,35 +164,76 @@ private fun ColumnScope.LikedNewsArticles(
         isVisible = likedArticles.isEmpty()
     )
 
-    likedArticles.take(4).forEach { newsArticle ->
+    val numberOfArticlesToShow = 4
+
+    likedArticles.take(numberOfArticlesToShow).forEach { newsArticle ->
         Row(
             modifier = Modifier
-                .defaultMinSize(minHeight = 70.dp)
+                .heightIn(min = 70.dp)
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(4.dp))
                 .clickable { onLikedArticleClicked(newsArticle) },
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val titleHeight = rememberSaveable { mutableIntStateOf(0) }
+            val imageHeight = with(LocalDensity.current) { titleHeight.intValue.toDp() + 16.dp }
+
             if (newsArticle.imageUrl != null)
                 AsyncImage(
-                    model = newsArticle.imageUrl,
+                    model = buildAsyncImageModel(
+                        data = newsArticle.imageUrl,
+                        size = Size(150, 100)
+                    ),
                     contentDescription = newsArticle.title,
                     modifier = Modifier
                         .width(100.dp)
-                        .fillMaxHeight(),
+                        .heightIn(min = 70.dp)
+                        .height(imageHeight),
                     contentScale = ContentScale.Crop
+                )
+
+            if (newsArticle.imageUrl == null)
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_newspaper),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.width(100.dp)
                 )
 
             Text(
                 text = newsArticle.title,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier
+                    .padding(8.dp)
+                    .onGloballyPositioned { titleHeight.intValue = it.size.height },
+                overflow = TextOverflow.Ellipsis
             )
 
         }
         Spacer(modifier = Modifier.height(8.dp))
     }
+
+    if (likedArticles.size > numberOfArticlesToShow)
+        Row(
+            modifier = Modifier
+                .heightIn(min = 70.dp)
+                .fillMaxWidth()
+                .shimmerBackground(
+                    showShimmer = true,
+                    shape = RoundedCornerShape(4.dp),
+                    delayBetweenEachShimmerMillis = 1000
+                )
+                .clickable { onSeeAllLikedArticlesClicked() },
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(id = R.string.see_all_val, likedArticles.size.toString()),
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+        }
 }
 
 @Composable

@@ -1,6 +1,7 @@
 package hr.vlahov.newsdemo.utils
 
 import hr.vlahov.domain.models.news.NewsArticle
+import hr.vlahov.domain.models.news.NewsSource
 import hr.vlahov.domain.models.profile.Profile
 import java.util.UUID
 
@@ -11,6 +12,30 @@ val dummyProfiles = listOf(
     Profile("Goran"),
     Profile("Ante"),
     Profile("Franko"),
+)
+
+val dummyNewsSources = listOf(
+    NewsSource(
+        "id1",
+        name = "ABC NEWS",
+        description = "Some description",
+        url = "",
+        country = "us"
+    ),
+    NewsSource(
+        "id2",
+        name = "BBC NEWS",
+        description = "Some description",
+        url = "",
+        country = "uk"
+    ),
+    NewsSource(
+        "id3",
+        name = "NBC NEWS",
+        description = "Some description",
+        url = "",
+        country = "us"
+    ),
 )
 
 val dummyNewsArticles = listOf(

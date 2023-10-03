@@ -1,9 +1,12 @@
 package hr.vlahov.newsdemo.presentation.news_module.shared
 
 import hr.vlahov.domain.models.news.NewsSource
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
+import javax.inject.Singleton
 
 interface NewsFilters {
     val searchQuery: StateFlow<String?>
@@ -11,6 +14,8 @@ interface NewsFilters {
     val dateTo: StateFlow<Long?>
     val orderBy: StateFlow<OrderBy>
     val selectedNewsSources: StateFlow<List<NewsSource>>
+
+    val combinedFilters: Flow<CombinedNewsFilters>
 
     /**
      * Orders the news ASCENDING or DESCENDING by publish date
@@ -31,8 +36,17 @@ interface NewsFilters {
     suspend fun setDateRange(dateFrom: Long?, dateTo: Long?)
     suspend fun setNewsOrder(orderBy: OrderBy)
     suspend fun selectNewsSources(newsSources: List<NewsSource>)
+
+    data class CombinedNewsFilters(
+        val searchQuery: String?,
+        val dateFrom: Long?,
+        val dateTo: Long?,
+        val orderBy: OrderBy,
+        val newsSources: List<NewsSource>,
+    )
 }
 
+@Singleton
 class NewsFiltersImpl @Inject constructor() : NewsFilters {
     override val searchQuery = MutableStateFlow<String?>(null)
 
@@ -43,6 +57,18 @@ class NewsFiltersImpl @Inject constructor() : NewsFilters {
     override val orderBy = MutableStateFlow(NewsFilters.OrderBy.DESCENDING)
 
     override val selectedNewsSources = MutableStateFlow<List<NewsSource>>(emptyList())
+
+    override val combinedFilters: Flow<NewsFilters.CombinedNewsFilters> = combine(
+        searchQuery, dateFrom, dateTo, orderBy, selectedNewsSources
+    ) { searchQuery, dateFrom, dateTo, orderBy, selectedNewsSources ->
+        NewsFilters.CombinedNewsFilters(
+            searchQuery = searchQuery,
+            dateFrom = dateFrom,
+            dateTo = dateTo,
+            orderBy = orderBy,
+            newsSources = selectedNewsSources
+        )
+    }
 
     override suspend fun setSearchQuery(searchQuery: String?) {
         this.searchQuery.emit(searchQuery)

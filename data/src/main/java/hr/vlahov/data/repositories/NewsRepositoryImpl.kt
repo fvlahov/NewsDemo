@@ -37,9 +37,9 @@ class NewsRepositoryImpl @Inject constructor(
     ): NewsArticlePage {
         return newsApi.fetchTopHeadlines(
             keyword = keyword,
-            country = country,
+            country = country.takeIf { sources.isEmpty() },
             category = null, //TODO: Implement in the future
-            sources = sources.takeIf { it.isNotEmpty() }?.joinToString(","),
+            sources = sources.takeIf { it.isNotEmpty() }?.joinToString(",") { it.id },
             pageSize = pageSize,
             page = page
         ).toNewsArticlePage(isNewsArticleLiked = ::isNewsArticleLiked)
@@ -57,7 +57,7 @@ class NewsRepositoryImpl @Inject constructor(
             keyword = keyword,
             from = dateFrom?.toISO8601Date(),
             to = dateTo?.toISO8601Date(),
-            sources = sources.joinToString(","),
+            sources = sources.joinToString(",") { it.id },
             pageSize = pageSize,
             page = page
         ).toNewsArticlePage(isNewsArticleLiked = ::isNewsArticleLiked)

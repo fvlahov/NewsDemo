@@ -21,6 +21,8 @@ class TopHeadlinesViewModel @Inject constructor(
     private val newsFilters: NewsFilters,
 ) : BaseViewModel() {
 
+    val combinedNewsFilters = newsFilters.combinedFilters
+
     val topHeadlines = Pager(
         config = PagingConfig(pageSize = 20),
         pagingSourceFactory = {

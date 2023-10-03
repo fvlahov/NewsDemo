@@ -20,6 +20,8 @@ class AllNewsViewModel @Inject constructor(
     private val newsFilters: NewsFilters,
 ) : BaseViewModel() {
 
+    val combinedNewsFilters = newsFilters.combinedFilters
+
     val allNewsArticles = Pager(
         config = PagingConfig(pageSize = 20),
         pagingSourceFactory = {

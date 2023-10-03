@@ -36,6 +36,10 @@ class ProfileUseCaseImpl @Inject constructor(
     }
 
     override suspend fun isProfileSelected(): Boolean =
-        credentialLocalRepository.fetchCurrentProfileName() != null
+        credentialLocalRepository.fetchCurrentProfileName().let { profileName ->
+            if (profileName == null)
+                return@let false
+            profileRepository.doesProfileExist(profileName)
+        }
 
 }

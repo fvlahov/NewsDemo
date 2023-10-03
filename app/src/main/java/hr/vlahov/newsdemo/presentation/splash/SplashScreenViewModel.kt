@@ -25,6 +25,7 @@ class SplashScreenViewModel @Inject constructor(
             //Navigate to CreateNewProfile if list of profiles is empty
             profileUseCase.allProfiles.stateIn(this).value.takeIf { it.isEmpty() }?.run {
                 navigateFromSplashScreen(NavTarget.CreateProfile)
+                return@launchIn
             }
 
             if (profileUseCase.isProfileSelected())

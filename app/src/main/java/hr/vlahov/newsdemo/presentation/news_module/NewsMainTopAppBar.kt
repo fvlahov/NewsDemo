@@ -107,11 +107,11 @@ fun NewsMainTopAppBar(
 private fun RowScope.SearchAction(
     onSearchQueryCommitted: (query: String?) -> Unit,
     searchHint: String = stringResource(id = R.string.search_here),
-    isExpanded: Boolean = false,
+    isExpandedInitially: Boolean = false,
     debounceMS: Long = 500L,
     colors: IconButtonColors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onBackground),
 ) {
-    val isExpandedState = rememberSaveable { mutableStateOf(isExpanded) }
+    val isExpandedState = rememberSaveable { mutableStateOf(isExpandedInitially) }
     val searchQuery = rememberSaveable { mutableStateOf<String?>(null) }
     val focusRequester = remember { FocusRequester() }
 
@@ -128,8 +128,8 @@ private fun RowScope.SearchAction(
 
     AnimatedVisibility(
         visible = isExpandedState.value,
-        enter = slideInHorizontally(initialOffsetX = { it }),
-        exit = slideOutHorizontally()
+        enter = fadeIn() + slideInHorizontally(initialOffsetX = { it }),
+        exit = fadeOut() + slideOutHorizontally(targetOffsetX = { it })
     ) {
         TextField(
             value = searchQuery.value.orEmpty(),
@@ -163,10 +163,21 @@ private fun RowScope.SearchAction(
         )
     }
 
-    AnimatedVisibility(visible = isExpandedState.value.not()) {
-        IconButton(onClick = { isExpandedState.value = true }, colors = colors) {
-            Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-        }
+    IconButton(
+        onClick = { isExpandedState.value = isExpandedState.value.not() },
+        colors = colors
+    ) {
+        if (isExpandedState.value.not())
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Search"
+            )
+        else
+            Icon(
+                painter = painterResource(id = R.drawable.ic_search_off),
+                contentDescription = "Close search"
+            )
+
     }
 }
 

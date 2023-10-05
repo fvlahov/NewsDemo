@@ -1,7 +1,6 @@
 package hr.vlahov.data.repositories
 
 import hr.vlahov.data.database.AppDatabase
-import hr.vlahov.data.models.api.news.ApiNewsArticle
 import hr.vlahov.data.models.converters.toNewsArticle
 import hr.vlahov.data.models.converters.toNewsArticleEntity
 import hr.vlahov.data.models.converters.toNewsArticlePage
@@ -9,12 +8,12 @@ import hr.vlahov.data.models.converters.toNewsSourceEntity
 import hr.vlahov.data.models.converters.toNewsSources
 import hr.vlahov.data.models.database.LikedNewsArticleEntity
 import hr.vlahov.data.networking.apis.NewsApi
-import hr.vlahov.data.utils.toISO8601Date
 import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.news.NewsArticlePage
 import hr.vlahov.domain.models.news.NewsSource
 import hr.vlahov.domain.repositories.NewsRepository
 import hr.vlahov.domain.repositories.ProfileRepository
+import hr.vlahov.domain.utils.toISO8601Date
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -42,7 +41,7 @@ class NewsRepositoryImpl @Inject constructor(
             sources = sources.takeIf { it.isNotEmpty() }?.joinToString(",") { it.id },
             pageSize = pageSize,
             page = page
-        ).toNewsArticlePage(isNewsArticleLiked = ::isNewsArticleLiked)
+        ).toNewsArticlePage(isNewsArticleLiked = { isNewsArticleLiked(it.originalArticleUrl) })
     }
 
     override suspend fun fetchEverything(
@@ -60,13 +59,13 @@ class NewsRepositoryImpl @Inject constructor(
             sources = sources.joinToString(",") { it.id },
             pageSize = pageSize,
             page = page
-        ).toNewsArticlePage(isNewsArticleLiked = ::isNewsArticleLiked)
+        ).toNewsArticlePage(isNewsArticleLiked = { isNewsArticleLiked(it.originalArticleUrl) })
     }
 
-    private suspend fun isNewsArticleLiked(newsArticle: ApiNewsArticle): Boolean {
+    private suspend fun isNewsArticleLiked(articleUrl: String): Boolean {
         return database.likedNewsArticleDao()
             .getLikedArticle(
-                originalArticleUrl = newsArticle.originalArticleUrl,
+                originalArticleUrl = articleUrl,
                 profileName = profileRepository.fetchCurrentProfile()!!.name
             ) != null
     }
@@ -78,6 +77,7 @@ class NewsRepositoryImpl @Inject constructor(
     override suspend fun fetchNewsArticle(originalArticleUrl: String): NewsArticle? {
         return database.newsArticleDao()
             .fetchNewsArticleByOriginalUrl(originalArticleUrl = originalArticleUrl)?.toNewsArticle()
+            ?.copy(isLiked = isNewsArticleLiked(originalArticleUrl))
     }
 
     override suspend fun toggleLikeNewsArticle(newsArticle: NewsArticle, isLiked: Boolean) {

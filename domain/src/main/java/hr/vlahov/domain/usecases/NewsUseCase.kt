@@ -28,4 +28,6 @@ interface NewsUseCase {
     suspend fun toggleLikeNewsArticle(newsArticle: NewsArticle, isLiked: Boolean)
 
     suspend fun preFetchNewsSources(language: String = "en")
+
+    suspend fun fetchNewsArticleByUrl(originalArticleUrl: String): NewsArticle?
 }

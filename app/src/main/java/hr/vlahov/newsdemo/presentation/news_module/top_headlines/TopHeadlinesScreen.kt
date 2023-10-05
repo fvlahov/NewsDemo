@@ -12,6 +12,7 @@ fun TopHeadlinesScreen(
     viewModel: TopHeadlinesViewModel = hiltViewModel(),
 ) {
     val combinedNewsFilters = viewModel.combinedNewsFilters.collectAsStateWithLifecycle(null).value
+    val orderBy = viewModel.orderBy.collectAsStateWithLifecycle().value
     val topHeadlines = viewModel.topHeadlines.collectAsLazyPagingItems()
 
     LaunchedEffect(combinedNewsFilters) {
@@ -21,6 +22,7 @@ fun TopHeadlinesScreen(
     NewsArticlesList(
         items = topHeadlines,
         onItemClick = viewModel::navigateToSingleNewsArticle,
+        orderBy = orderBy,
         onNewsArticleLikedChanged = viewModel::toggleLikeNewsArticle
     )
 }

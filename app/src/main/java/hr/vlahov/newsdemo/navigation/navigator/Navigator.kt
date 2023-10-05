@@ -26,7 +26,7 @@ class Navigator @Inject constructor() {
 
     fun navigateMainTo(navTarget: NavTarget, options: NavOptionsBuilder.() -> Unit = {}) {
         _mainNavigationFlow.tryEmit(
-            NavigationIntent(
+            NavigationIntent.NavigateTo(
                 navTarget = navTarget,
                 options = options
             )
@@ -35,15 +35,26 @@ class Navigator @Inject constructor() {
 
     fun navigateNewsTo(navTarget: NavTarget, options: NavOptionsBuilder.() -> Unit = {}) {
         _newsNavigationFlow.tryEmit(
-            NavigationIntent(
+            NavigationIntent.NavigateTo(
                 navTarget = navTarget,
                 options = options
             )
         )
     }
 
-    data class NavigationIntent(
-        val navTarget: NavTarget,
-        val options: NavOptionsBuilder.() -> Unit = {},
-    )
+    fun popNewsBackStack(popBackStackTo: NavTarget? = null, inclusive: Boolean = true) {
+        _newsNavigationFlow.tryEmit(
+            NavigationIntent.PopBackStack(popBackStackTo, inclusive)
+        )
+    }
+
+    sealed class NavigationIntent {
+        data class PopBackStack(val popBackStackTo: NavTarget?, val inclusive: Boolean) :
+            NavigationIntent()
+
+        data class NavigateTo(
+            val navTarget: NavTarget,
+            val options: NavOptionsBuilder.() -> Unit = {},
+        ) : NavigationIntent()
+    }
 }

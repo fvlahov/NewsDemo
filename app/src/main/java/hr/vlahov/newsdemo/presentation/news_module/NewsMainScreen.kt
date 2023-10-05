@@ -1,7 +1,6 @@
 package hr.vlahov.newsdemo.presentation.news_module
 
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FiniteAnimationSpec
@@ -28,10 +27,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import hr.vlahov.domain.models.news.NewsSource
 import hr.vlahov.newsdemo.navigation.ModuleRoutes
@@ -41,6 +42,7 @@ import hr.vlahov.newsdemo.presentation.news_module.everything.AllNewsScreen
 import hr.vlahov.newsdemo.presentation.news_module.liked_news_articles.LikedNewsArticlesScreen
 import hr.vlahov.newsdemo.presentation.news_module.profile.ProfileScreen
 import hr.vlahov.newsdemo.presentation.news_module.shared.NewsFilters
+import hr.vlahov.newsdemo.presentation.news_module.single_news_article.SingleNewsArticleScreen
 import hr.vlahov.newsdemo.presentation.news_module.top_headlines.TopHeadlinesScreen
 import hr.vlahov.newsdemo.ui.theme.NewsDemoTheme
 import hr.vlahov.newsdemo.utils.dummyNewsSources
@@ -115,14 +117,11 @@ private fun NewsMainBody(
             )
         },
         topBar = {
-            AnimatedVisibility(
-                visible = listOf(
+            if (listOf(
                     NavTarget.NewsModule.NewsNavItems.TOP_HEADLINES.destinationName,
                     NavTarget.NewsModule.NewsNavItems.ALL_NEWS.destinationName
-                ).contains(currentRoute),
-                enter = fadeIn(animationSpec = tween(delayMillis = 250)),
-                exit = fadeOut(animationSpec = tween(delayMillis = 250))
-            ) {
+                ).contains(currentRoute)
+            )
                 NewsMainTopAppBar(
                     allNewsSources = allNewsSources,
                     selectedNewsSources = selectedNewsSources,
@@ -131,7 +130,23 @@ private fun NewsMainBody(
                     onNewsOrderChanged = onNewsOrderChanged,
                     onNewsSourcesChanged = onNewsSourcesChanged
                 )
-            }
+            /*            AnimatedVisibility(
+                            visible = listOf(
+                                NavTarget.NewsModule.NewsNavItems.TOP_HEADLINES.destinationName,
+                                NavTarget.NewsModule.NewsNavItems.ALL_NEWS.destinationName
+                            ).contains(currentRoute),
+                            enter = fadeIn(animationSpec = tween(delayMillis = 250)),
+                            exit = fadeOut(animationSpec = tween(delayMillis = 250))
+                        ) {
+                            NewsMainTopAppBar(
+                                allNewsSources = allNewsSources,
+                                selectedNewsSources = selectedNewsSources,
+                                onSearchQueryCommitted = onSearchQueryCommitted,
+                                onDateRangeConfirmed = onDateRangeConfirmed,
+                                onNewsOrderChanged = onNewsOrderChanged,
+                                onNewsSourcesChanged = onNewsSourcesChanged
+                            )
+                        }*/
 
         },
         content = content
@@ -229,6 +244,19 @@ fun NavGraphBuilder.addNewsArticlesGraph() {
             popExitTransition = exitTransition
         ) {
             LikedNewsArticlesScreen()
+        }
+
+        composable(
+            route = NavTarget.NewsModule.SingleNewsArticle.Info.Destination,
+            enterTransition = enterTransition,
+            exitTransition = exitTransition,
+            popEnterTransition = enterTransition,
+            popExitTransition = exitTransition,
+            arguments = listOf(navArgument(NavTarget.NewsModule.SingleNewsArticle.Info.OriginalNewsArticleParam) {
+                type = NavType.StringType
+            })
+        ) {
+            SingleNewsArticleScreen()
         }
     }
 }

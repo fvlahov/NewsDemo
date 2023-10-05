@@ -13,10 +13,25 @@ fun CoroutineScope.subscribeToNavigation(
     targetFlow: Flow<Navigator.NavigationIntent>,
 ) {
     targetFlow.onEach { navIntent ->
-        navController.navigate(navIntent.navTarget.destination) {
-            popUpTo(navIntent.navTarget.destination)
-            navIntent.options.invoke(this)
+        when (navIntent) {
+            is Navigator.NavigationIntent.NavigateTo -> {
+                navController.navigate(navIntent.navTarget.destination) {
+                    popUpTo(navIntent.navTarget.destination)
+                    navIntent.options.invoke(this)
+                }
+            }
+
+            is Navigator.NavigationIntent.PopBackStack -> {
+                if (navIntent.popBackStackTo == null)
+                    navController.popBackStack()
+                else
+                    navController.popBackStack(
+                        navIntent.popBackStackTo.destination,
+                        navIntent.inclusive
+                    )
+            }
         }
+
     }.launchIn(this)
 }
 

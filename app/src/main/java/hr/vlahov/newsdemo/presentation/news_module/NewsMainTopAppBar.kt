@@ -281,6 +281,17 @@ private fun DateRangeBottomSheet(
                 Spacer(modifier = Modifier.weight(1f))
                 TextButton(
                     onClick = {
+                        dateRangePickerState.setSelection(null, null)
+                    },
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.clear),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                TextButton(
+                    onClick = {
                         onDateRangeConfirmed(
                             dateRangePickerState.selectedStartDateMillis,
                             dateRangePickerState.selectedEndDateMillis
@@ -306,7 +317,7 @@ private fun DateRangeBottomSheet(
 private fun NewsOrderBySelector(
     onNewsOrderChanged: (orderBy: NewsFilters.OrderBy) -> Unit,
     modifier: Modifier = Modifier,
-    currentOrderBy: NewsFilters.OrderBy = NewsFilters.OrderBy.ASCENDING,
+    currentOrderBy: NewsFilters.OrderBy = NewsFilters.OrderBy.DESCENDING,
 ) {
     val orderBy = remember { mutableStateOf(currentOrderBy) }
     val scope = rememberCoroutineScope()

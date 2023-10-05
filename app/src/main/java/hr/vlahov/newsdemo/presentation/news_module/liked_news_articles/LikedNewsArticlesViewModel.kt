@@ -12,6 +12,7 @@ import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.usecases.NewsUseCase
 import hr.vlahov.domain.usecases.ProfileUseCase
 import hr.vlahov.newsdemo.base.BaseViewModel
+import hr.vlahov.newsdemo.navigation.NavTarget
 import hr.vlahov.newsdemo.navigation.navigator.Navigator
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -39,7 +40,11 @@ class LikedNewsArticlesViewModel @Inject constructor(
         .cachedIn(viewModelScope)
 
     fun navigateToSingleNewsArticle(newsArticle: NewsArticle) {
-
+        navigator.navigateNewsTo(
+            NavTarget.NewsModule.SingleNewsArticle.WithNewsArticleUrl(
+                newsArticle.originalArticleUrl
+            )
+        )
     }
 
     fun toggleLikeNewsArticle(newsArticle: NewsArticle, isLiked: Boolean) {

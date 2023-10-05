@@ -34,9 +34,8 @@ import hr.vlahov.newsdemo.ui.theme.LightBlue
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(
-    viewModel: SplashScreenViewModel = hiltViewModel(),
-) {
+fun SplashScreen() {
+    hiltViewModel<SplashScreenViewModel>()
     AnimatedTextScreen(
         text = stringResource(id = R.string.news)
     )

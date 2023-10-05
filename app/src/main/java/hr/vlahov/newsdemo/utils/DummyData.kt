@@ -3,6 +3,7 @@ package hr.vlahov.newsdemo.utils
 import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.news.NewsSource
 import hr.vlahov.domain.models.profile.Profile
+import java.util.Date
 import java.util.UUID
 
 val randomId
@@ -46,7 +47,8 @@ val dummyNewsArticles = listOf(
         content = "A somewhat longer content of the description with a lot of 'wait for its'",
         originalArticleUrl = randomId,
         imageUrl = null,
-        isLiked = true
+        isLiked = true,
+        publishedAt = Date().time
     ),
     NewsArticle(
         author = "Ante Antić",
@@ -55,7 +57,9 @@ val dummyNewsArticles = listOf(
         content = "A somewhat longer content of the description with a lot of 'wait for its'",
         originalArticleUrl = randomId,
         imageUrl = null,
-        isLiked = false
+        isLiked = false,
+        publishedAt = Date().time
+
     ),
     NewsArticle(
         author = "Ante Antić",
@@ -64,7 +68,9 @@ val dummyNewsArticles = listOf(
         content = "A somewhat longer content of the description with a lot of 'wait for its'",
         originalArticleUrl = randomId,
         imageUrl = null,
-        isLiked = false
+        isLiked = false,
+        publishedAt = Date().time
+
     ),
     NewsArticle(
         author = "Ante Antić",
@@ -73,7 +79,9 @@ val dummyNewsArticles = listOf(
         content = "A somewhat longer content of the description with a lot of 'wait for its'",
         originalArticleUrl = randomId,
         imageUrl = null,
-        isLiked = false
+        isLiked = false,
+        publishedAt = Date().time
+
     ),
     NewsArticle(
         author = "Ante Antić",
@@ -82,7 +90,9 @@ val dummyNewsArticles = listOf(
         content = "A somewhat longer content of the description with a lot of 'wait for its'",
         originalArticleUrl = randomId,
         imageUrl = null,
-        isLiked = false
+        isLiked = false,
+        publishedAt = Date().time
+
     ),
     NewsArticle(
         author = "Ante Antić",
@@ -91,6 +101,8 @@ val dummyNewsArticles = listOf(
         content = "A somewhat longer content of the description with a lot of 'wait for its'",
         originalArticleUrl = randomId,
         imageUrl = null,
-        isLiked = false
+        isLiked = false,
+        publishedAt = Date().time
+
     )
 )

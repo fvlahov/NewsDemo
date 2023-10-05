@@ -6,12 +6,13 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hr.vlahov.domain.models.news.NewsArticle
+import hr.vlahov.domain.models.news.NewsArticlePage
 import hr.vlahov.domain.usecases.NewsUseCase
 import hr.vlahov.newsdemo.base.BaseViewModel
+import hr.vlahov.newsdemo.navigation.NavTarget
 import hr.vlahov.newsdemo.navigation.navigator.Navigator
 import hr.vlahov.newsdemo.presentation.news_module.shared.NewsArticlePagingSource
 import hr.vlahov.newsdemo.presentation.news_module.shared.NewsFilters
-import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,6 +23,7 @@ class TopHeadlinesViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     val combinedNewsFilters = newsFilters.combinedFilters
+    val orderBy = newsFilters.orderBy
 
     val topHeadlines = Pager(
         config = PagingConfig(pageSize = 20),
@@ -31,13 +33,17 @@ class TopHeadlinesViewModel @Inject constructor(
                     keyword = newsFilters.searchQuery.value,
                     sources = newsFilters.selectedNewsSources.value,
                     page = currentPage
-                )
+                ).filterArticlesByDate()
             }
         }
     ).flow.cachedIn(viewModelScope)
 
     fun navigateToSingleNewsArticle(newsArticle: NewsArticle) {
-
+        navigator.navigateNewsTo(
+            NavTarget.NewsModule.SingleNewsArticle.WithNewsArticleUrl(
+                newsArticle.originalArticleUrl
+            )
+        )
     }
 
     fun toggleLikeNewsArticle(newsArticle: NewsArticle, isLiked: Boolean) {
@@ -46,7 +52,10 @@ class TopHeadlinesViewModel @Inject constructor(
         }
     }
 
-    private suspend fun <T> MutableStateFlow<List<T>>.merge(items: List<T>) {
-        this.emit(this.value + items)
-    }
+    private fun NewsArticlePage.filterArticlesByDate() =
+        this.copy(items = this.items.filter {
+            it.publishedAt > (newsFilters.dateFrom.value ?: 0) &&
+                    it.publishedAt < (newsFilters.dateTo.value ?: Long.MAX_VALUE)
+        })
+
 }

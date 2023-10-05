@@ -3,6 +3,8 @@ package hr.vlahov.newsdemo.navigation
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import hr.vlahov.newsdemo.R
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 sealed class NavTarget(val destination: String) {
     object Splash : NavTarget("splashscreen")
@@ -33,6 +35,22 @@ sealed class NavTarget(val destination: String) {
         }
 
         object LikedNewsArticles : NavTarget("likednewsarticlesscreen")
+
+        sealed class SingleNewsArticle(destination: String) : NavTarget(destination) {
+            object Info {
+                const val OriginalNewsArticleParam = "originalnewsarticle"
+                const val Destination = "singlenewsarticlescreen/{$OriginalNewsArticleParam}"
+            }
+
+            data class WithNewsArticleUrl(val originalNewsArticleUrl: String) : SingleNewsArticle(
+                "singlenewsarticlescreen/${
+                    URLEncoder.encode(
+                        originalNewsArticleUrl,
+                        StandardCharsets.UTF_8.toString()
+                    )
+                }"
+            )
+        }
     }
 }
 

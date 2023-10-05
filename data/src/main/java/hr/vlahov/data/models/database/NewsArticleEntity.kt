@@ -14,4 +14,5 @@ data class NewsArticleEntity(
     val title: String,
     val description: String?,
     val content: String?,
+    val publishedAt: Long,
 )

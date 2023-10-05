@@ -7,6 +7,7 @@ data class NewsArticle(
     val content: String?,
     val originalArticleUrl: String,
     val imageUrl: String?,
+    val publishedAt: Long,
 
     val isLiked: Boolean,
 )

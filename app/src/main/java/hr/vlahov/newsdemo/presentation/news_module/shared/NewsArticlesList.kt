@@ -1,6 +1,7 @@
 package hr.vlahov.newsdemo.presentation.news_module.shared
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -27,12 +29,16 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -53,6 +59,7 @@ import hr.vlahov.newsdemo.R
 import hr.vlahov.newsdemo.ui.theme.NewsDemoTheme
 import hr.vlahov.newsdemo.utils.buildAsyncImageModel
 import hr.vlahov.newsdemo.utils.dummyNewsArticles
+import hr.vlahov.newsdemo.utils.getFormattedDate
 import hr.vlahov.newsdemo.utils.isLoading
 import hr.vlahov.newsdemo.utils.isRefreshing
 import hr.vlahov.newsdemo.utils.items
@@ -66,12 +73,23 @@ fun NewsArticlesList(
     items: LazyPagingItems<NewsArticle>,
     onItemClick: (NewsArticle) -> Unit,
     onNewsArticleLikedChanged: (NewsArticle, isLiked: Boolean) -> Unit,
+    orderBy: NewsFilters.OrderBy,
     modifier: Modifier = Modifier,
 ) {
     val pullRefreshState = rememberPullRefreshState(
         refreshing = items.isRefreshing(),
         onRefresh = { items.refresh() }
     )
+
+    val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(orderBy) {
+        val scrollToItemIndex = if (orderBy == NewsFilters.OrderBy.DESCENDING)
+            0
+        else
+            items.itemCount - 1
+        lazyListState.scrollToItem(scrollToItemIndex)
+    }
 
     Box {
         PullRefreshIndicator(
@@ -85,9 +103,11 @@ fun NewsArticlesList(
         HandleLoadStateError(loadStates = items.loadState.source)
 
         LazyColumn(
+            state = lazyListState,
             modifier = modifier
                 .fillMaxSize()
-                .pullRefresh(pullRefreshState)
+                .pullRefresh(pullRefreshState),
+            reverseLayout = orderBy == NewsFilters.OrderBy.ASCENDING
         ) {
             item {
                 AnimatedVisibility(visible = items.isLoading()) {
@@ -183,6 +203,24 @@ private fun NewsArticleItem(
                     modifier = Modifier.fillMaxSize()
                 )
 
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(
+                                    Color.Black.copy(),
+                                    Color.Transparent
+                                )
+                            ), alpha = 0.5f
+                        )
+                ) {
+                    Text(
+                        text = newsArticle.getFormattedDate(LocalContext.current),
+                        modifier = Modifier.padding(8.dp, 8.dp, 8.dp, 32.dp)
+                    )
+                }
+
                 this@Card.AnimatedVisibility(
                     visible = imageLoadingState.value is AsyncImagePainter.State.Loading,
                     modifier = Modifier.align(Alignment.Center)
@@ -272,6 +310,7 @@ private fun NewsArticleListPreview() {
         NewsArticlesList(
             items = items,
             onItemClick = {},
+            orderBy = NewsFilters.OrderBy.DESCENDING,
             onNewsArticleLikedChanged = { _, _ -> }
         )
 

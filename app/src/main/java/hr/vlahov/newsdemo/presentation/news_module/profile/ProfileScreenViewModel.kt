@@ -43,6 +43,10 @@ class ProfileScreenViewModel @Inject constructor(
     }
 
     fun navigateToLikedArticle(newsArticle: NewsArticle) {
-
+        navigator.navigateNewsTo(
+            NavTarget.NewsModule.SingleNewsArticle.WithNewsArticleUrl(
+                newsArticle.originalArticleUrl
+            )
+        )
     }
 }

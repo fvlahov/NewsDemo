@@ -55,4 +55,7 @@ class NewsUseCaseImpl @Inject constructor(
             newsRepository.saveNewsSourcesToDatabase(it)
         }
     }
+
+    override suspend fun fetchNewsArticleByUrl(originalArticleUrl: String): NewsArticle? =
+        newsRepository.fetchNewsArticle(originalArticleUrl = originalArticleUrl)
 }

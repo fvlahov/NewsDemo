@@ -12,6 +12,8 @@ import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.news.NewsArticlePage
 import hr.vlahov.domain.models.news.NewsCategory
 import hr.vlahov.domain.models.news.NewsSource
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 suspend fun ApiNewsArticle.toNewsArticle(
     isNewsArticleLiked: suspend (ApiNewsArticle) -> Boolean,
@@ -22,6 +24,7 @@ suspend fun ApiNewsArticle.toNewsArticle(
     content = content,
     originalArticleUrl = originalArticleUrl,
     imageUrl = imageUrl,
+    publishedAt = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).parse(publishedAt)!!.time,
     isLiked = isNewsArticleLiked(this)
 )
 
@@ -49,6 +52,7 @@ fun LikedNewsArticleEntity.toNewsArticle() = NewsArticle(
     content = newsArticle.content,
     originalArticleUrl = newsArticle.originalArticleUrl,
     imageUrl = newsArticle.imageUrl,
+    publishedAt = newsArticle.publishedAt,
     isLiked = true
 )
 
@@ -60,6 +64,7 @@ fun NewsArticle.toNewsArticleEntity() = NewsArticleEntity(
     author = author,
     title = title,
     description = description,
+    publishedAt = publishedAt,
     content = content
 )
 
@@ -69,7 +74,9 @@ fun NewsArticleEntity.toNewsArticle() = NewsArticle(
     description = description,
     content = content,
     originalArticleUrl = originalArticleUrl,
-    imageUrl = imageUrl, isLiked = false
+    imageUrl = imageUrl,
+    publishedAt = publishedAt,
+    isLiked = false
 )
 
 fun ApiNewsSource.toNewsSource() = NewsSource(

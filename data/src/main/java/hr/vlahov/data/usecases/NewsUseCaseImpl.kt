@@ -1,5 +1,7 @@
 package hr.vlahov.data.usecases
 
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.news.NewsArticlePage
 import hr.vlahov.domain.models.news.NewsSource
@@ -13,6 +15,9 @@ class NewsUseCaseImpl @Inject constructor(
 ) : NewsUseCase {
 
     override val newsSources: Flow<List<NewsSource>> = newsRepository.newsSources
+
+    override fun getLikedNewsArticlesPagingData(pagingConfig: PagingConfig): Flow<PagingData<NewsArticle>> =
+        newsRepository.getLikedNewsArticlesPagingData(pagingConfig)
 
     override suspend fun fetchTopHeadlines(
         keyword: String?,

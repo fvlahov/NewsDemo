@@ -5,11 +5,9 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hr.vlahov.data.database.dao.LikedNewsArticleDao
 import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.news.NewsArticlePage
 import hr.vlahov.domain.usecases.NewsUseCase
-import hr.vlahov.domain.usecases.ProfileUseCase
 import hr.vlahov.newsdemo.base.BaseViewModel
 import hr.vlahov.newsdemo.navigation.NavTarget
 import hr.vlahov.newsdemo.navigation.navigator.Navigator
@@ -22,8 +20,6 @@ class TopHeadlinesViewModel @Inject constructor(
     private val navigator: Navigator,
     private val newsUseCase: NewsUseCase,
     private val newsFilters: NewsFilters,
-    private val likedNewsArticleDao: LikedNewsArticleDao,
-    private val profileUseCase: ProfileUseCase,
 ) : BaseViewModel() {
 
     val combinedNewsFilters = newsFilters.combinedFilters

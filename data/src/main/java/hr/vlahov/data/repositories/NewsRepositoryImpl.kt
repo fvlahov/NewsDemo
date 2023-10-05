@@ -1,5 +1,9 @@
 package hr.vlahov.data.repositories
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import hr.vlahov.data.database.AppDatabase
 import hr.vlahov.data.models.converters.toNewsArticle
 import hr.vlahov.data.models.converters.toNewsArticleEntity
@@ -26,6 +30,18 @@ class NewsRepositoryImpl @Inject constructor(
 
     override val newsSources: Flow<List<NewsSource>> =
         database.newsSourceDao().getAll().map { it.toNewsSources() }
+
+    override fun getLikedNewsArticlesPagingData(pagingConfig: PagingConfig): Flow<PagingData<NewsArticle>> =
+        Pager(
+            config = pagingConfig,
+            pagingSourceFactory = {
+                database.likedNewsArticleDao()
+                    .getLikedNewsArticlesForProfilePagingSource(profileRepository.fetchCurrentProfile()!!.name)
+            }
+        ).flow
+            .map { likedNewsArticles ->
+                likedNewsArticles.map { it.toNewsArticle() }
+            }
 
     override suspend fun fetchTopHeadlines(
         keyword: String?,

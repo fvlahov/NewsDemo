@@ -1,5 +1,7 @@
 package hr.vlahov.domain.repositories
 
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import hr.vlahov.domain.models.news.NewsArticle
 import hr.vlahov.domain.models.news.NewsArticlePage
 import hr.vlahov.domain.models.news.NewsSource
@@ -7,6 +9,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
     val newsSources: Flow<List<NewsSource>>
+
+    fun getLikedNewsArticlesPagingData(
+        pagingConfig: PagingConfig,
+    ): Flow<PagingData<NewsArticle>>
 
     suspend fun fetchTopHeadlines(
         keyword: String?,

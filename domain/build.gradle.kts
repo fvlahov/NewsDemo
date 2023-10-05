@@ -10,4 +10,5 @@ java {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    api("androidx.paging:paging-common:3.3.0-alpha02")
 }

@@ -12,7 +12,7 @@ import hr.vlahov.newsdemo.utils.isInErrorOrLoading
 fun AllNewsScreen(
     viewModel: AllNewsViewModel = hiltViewModel(),
 ) {
-    val combinedNewsFilters = viewModel.combinedNewsFilters.collectAsStateWithLifecycle(null).value
+    val combinedNewsFilters = viewModel.combinedNewsFilters.collectAsStateWithLifecycle().value
     val items = viewModel.allNewsArticles.collectAsLazyPagingItems()
     val error = viewModel.errors.collectAsStateWithLifecycle().value
 

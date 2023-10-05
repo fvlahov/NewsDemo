@@ -10,7 +10,7 @@ import hr.vlahov.newsdemo.presentation.news_module.shared.NewsArticlesList
 fun TopHeadlinesScreen(
     viewModel: TopHeadlinesViewModel = hiltViewModel(),
 ) {
-    val combinedNewsFilters = viewModel.combinedNewsFilters.collectAsStateWithLifecycle(null).value
+    val combinedNewsFilters = viewModel.combinedNewsFilters.collectAsStateWithLifecycle().value
     val topHeadlines = viewModel.topHeadlines.collectAsLazyPagingItems()
 
 

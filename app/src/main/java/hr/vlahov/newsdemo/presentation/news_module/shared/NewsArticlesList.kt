@@ -77,7 +77,7 @@ fun NewsArticlesList(
     combinedNewsFilters: NewsFilters.CombinedNewsFilters?,
     modifier: Modifier = Modifier,
 ) {
-    val didInitialize = remember { mutableStateOf(false) }
+    val didInitialize = rememberSaveable { mutableStateOf(false) }
     val orderBy = remember {
         derivedStateOf {
             combinedNewsFilters?.orderBy ?: NewsFilters.OrderBy.DESCENDING

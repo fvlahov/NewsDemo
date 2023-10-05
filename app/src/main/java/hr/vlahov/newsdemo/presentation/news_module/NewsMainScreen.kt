@@ -71,16 +71,19 @@ fun NewsMainScreen(
         allNewsSources = newsSources,
         selectedNewsSources = selectedNewsSources,
         onNavigateTo = { newsNavItem ->
-            try {
-                //GetBackStackEntry throws exception if there is no backstack entry with route
-                navController.getBackStackEntry(newsNavItem.destinationName).destination.route?.let {
-                    navController.popBackStack(route = it, inclusive = false)
-                }
-            } catch (e: Exception) {
-                navController.navigate(newsNavItem.destinationName) {
-                    this.launchSingleTop = true
-                }
+            navController.navigate(newsNavItem.destinationName) {
+                this.launchSingleTop = true
             }
+            /*            try {
+                            //GetBackStackEntry throws exception if there is no backstack entry with route
+                            navController.getBackStackEntry(newsNavItem.destinationName).destination.route?.let {
+                                navController.popBackStack(route = it, inclusive = false)
+                            }
+                        } catch (e: Exception) {
+                            navController.navigate(newsNavItem.destinationName) {
+                                this.launchSingleTop = true
+                            }
+                        }*/
         },
         onSearchQueryCommitted = viewModel::setSearchQuery,
         onDateRangeConfirmed = viewModel::setDateRange,

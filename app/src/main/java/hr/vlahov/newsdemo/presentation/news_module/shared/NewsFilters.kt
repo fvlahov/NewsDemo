@@ -2,9 +2,13 @@ package hr.vlahov.newsdemo.presentation.news_module.shared
 
 import hr.vlahov.domain.models.news.NewsSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,7 +19,7 @@ interface NewsFilters {
     val orderBy: StateFlow<OrderBy>
     val selectedNewsSources: StateFlow<List<NewsSource>>
 
-    val combinedFilters: Flow<CombinedNewsFilters>
+    val combinedFilters: StateFlow<CombinedNewsFilters>
 
     /**
      * Orders the news ASCENDING or DESCENDING by publish date;
@@ -68,8 +72,13 @@ class NewsFiltersImpl @Inject constructor() : NewsFilters {
 
     override val selectedNewsSources = MutableStateFlow<List<NewsSource>>(emptyList())
 
-    override val combinedFilters: Flow<NewsFilters.CombinedNewsFilters> = combine(
-        searchQuery, dateFrom, dateTo, orderBy, selectedNewsSources
+    override val combinedFilters: StateFlow<NewsFilters.CombinedNewsFilters> = combine(
+        searchQuery,
+        dateFrom,
+        dateTo,
+        orderBy,
+        selectedNewsSources,
+        initialValue = NewsFilters.CombinedNewsFilters.default()
     ) { searchQuery, dateFrom, dateTo, orderBy, selectedNewsSources ->
         NewsFilters.CombinedNewsFilters(
             searchQuery = searchQuery,
@@ -95,5 +104,34 @@ class NewsFiltersImpl @Inject constructor() : NewsFilters {
 
     override suspend fun selectNewsSources(newsSources: List<NewsSource>) {
         this.selectedNewsSources.emit(newsSources)
+    }
+
+    private fun <T1, T2, T3, T4, T5, R> combine(
+        flow: Flow<T1>,
+        flow2: Flow<T2>,
+        flow3: Flow<T3>,
+        flow4: Flow<T4>,
+        flow5: Flow<T5>,
+        initialValue: R,
+        transform: suspend (a: T1, b: T2, c: T3, d: T4, e: T5) -> R,
+    ): StateFlow<R> {
+        return object : StateFlow<R> {
+            private val mutex = Mutex()
+            override var value: R = initialValue
+
+            override val replayCache: List<R> get() = listOf(value)
+
+            override suspend fun collect(collector: FlowCollector<R>): Nothing {
+                combine(flow, flow2, flow3, flow4, flow5, transform)
+                    .onStart { emit(initialValue) }
+                    .collect {
+                        mutex.withLock {
+                            value = it
+                            collector.emit(it)
+                        }
+                    }
+                error("This exception is needed to 'return' Nothing. It won't be thrown (collection of StateFlow will never end)")
+            }
+        }
     }
 }

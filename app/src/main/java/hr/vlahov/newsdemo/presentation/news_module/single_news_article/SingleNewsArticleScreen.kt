@@ -29,6 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,11 +51,13 @@ fun SingleNewsArticleScreen(
 ) {
     val newsArticle = viewModel.newsArticle.collectAsStateWithLifecycle().value
 
+    val uriHandler = LocalUriHandler.current
+
     SingleNewsArticleBody(
         newsArticle = newsArticle,
         onNavigateBack = viewModel::navigateBack,
         onToggleLikeNewsArticle = viewModel::toggleNewsArticleLiked,
-        onReadFullArticle = viewModel::navigateToFullArticle
+        onReadFullArticle = { uriHandler.openUri(it) }
     )
 }
 
@@ -63,7 +66,7 @@ private fun SingleNewsArticleBody(
     newsArticle: NewsArticle?,
     onNavigateBack: () -> Unit,
     onToggleLikeNewsArticle: (isLiked: Boolean) -> Unit,
-    onReadFullArticle: () -> Unit,
+    onReadFullArticle: (url: String) -> Unit,
 ) {
 
     Scaffold(
@@ -174,7 +177,7 @@ private fun SingleNewsArticleBody(
 
                             Spacer(modifier = Modifier.weight(1f))
 
-                            TextButton(onClick = onReadFullArticle) {
+                            TextButton(onClick = { onReadFullArticle(newsArticle.originalArticleUrl) }) {
                                 Text(
                                     text = stringResource(id = R.string.read_full_article),
                                     fontSize = 16.sp,

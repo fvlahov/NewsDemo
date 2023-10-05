@@ -3,7 +3,9 @@ package hr.vlahov.newsdemo.presentation.splash
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hr.vlahov.domain.usecases.NewsUseCase
 import hr.vlahov.domain.usecases.ProfileUseCase
+import hr.vlahov.newsdemo.R
 import hr.vlahov.newsdemo.base.BaseViewModel
+import hr.vlahov.newsdemo.base.errors.GenericError
 import hr.vlahov.newsdemo.navigation.NavTarget
 import hr.vlahov.newsdemo.navigation.navigator.Navigator
 import hr.vlahov.newsdemo.navigation.popUpToInclusive
@@ -19,7 +21,15 @@ class SplashScreenViewModel @Inject constructor(
 ) : BaseViewModel() {
     init {
         launchIn {
-            newsUseCase.preFetchNewsSources()
+            try {
+                newsUseCase.preFetchNewsSources()
+            } catch (_: Exception) {
+                localErrors.emit(
+                    GenericError(
+                        R.string.too_many_requests_splash,
+                    )
+                )
+            }
 
             delay(2000)
             //Navigate to CreateNewProfile if list of profiles is empty

@@ -29,13 +29,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import hr.vlahov.newsdemo.R
 import hr.vlahov.newsdemo.ui.theme.LightBlue
+import hr.vlahov.newsdemo.utils.ErrorHandler
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen() {
-    hiltViewModel<SplashScreenViewModel>()
+    val viewModel = hiltViewModel<SplashScreenViewModel>()
+    val error = viewModel.errors.collectAsStateWithLifecycle().value
+    ErrorHandler(error = error)
     AnimatedTextScreen(
         text = stringResource(id = R.string.news)
     )

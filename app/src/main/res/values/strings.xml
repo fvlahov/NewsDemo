@@ -31,4 +31,5 @@
     <string name="clear">Clear</string>
     <string name="by_val">By %1$s</string>
     <string name="read_full_article">Read the full article</string>
+    <string name="too_many_requests_splash">There were too many requests, some features will not work properly.</string>
 </resources>

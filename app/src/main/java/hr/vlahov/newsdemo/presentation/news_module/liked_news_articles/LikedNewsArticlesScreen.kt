@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import hr.vlahov.newsdemo.presentation.news_module.shared.NewsArticlesList
-import hr.vlahov.newsdemo.presentation.news_module.shared.NewsFilters
 
 @Composable
 fun LikedNewsArticlesScreen(
@@ -15,7 +14,7 @@ fun LikedNewsArticlesScreen(
     NewsArticlesList(
         items = items,
         onItemClick = viewModel::navigateToSingleNewsArticle,
-        orderBy = NewsFilters.OrderBy.DESCENDING,
+        combinedNewsFilters = null,
         onNewsArticleLikedChanged = viewModel::toggleLikeNewsArticle
     )
 }

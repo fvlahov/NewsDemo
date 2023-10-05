@@ -73,7 +73,7 @@ fun NewsMainScreen(
         onNavigateTo = { newsNavItem ->
             try {
                 //GetBackStackEntry throws exception if there is no backstack entry with route
-                navController.getBackStackEntry(newsNavItem.destinationName).destination.route?.also {
+                navController.getBackStackEntry(newsNavItem.destinationName).destination.route?.let {
                     navController.popBackStack(route = it, inclusive = false)
                 }
             } catch (e: Exception) {
@@ -130,24 +130,6 @@ private fun NewsMainBody(
                     onNewsOrderChanged = onNewsOrderChanged,
                     onNewsSourcesChanged = onNewsSourcesChanged
                 )
-            /*            AnimatedVisibility(
-                            visible = listOf(
-                                NavTarget.NewsModule.NewsNavItems.TOP_HEADLINES.destinationName,
-                                NavTarget.NewsModule.NewsNavItems.ALL_NEWS.destinationName
-                            ).contains(currentRoute),
-                            enter = fadeIn(animationSpec = tween(delayMillis = 250)),
-                            exit = fadeOut(animationSpec = tween(delayMillis = 250))
-                        ) {
-                            NewsMainTopAppBar(
-                                allNewsSources = allNewsSources,
-                                selectedNewsSources = selectedNewsSources,
-                                onSearchQueryCommitted = onSearchQueryCommitted,
-                                onDateRangeConfirmed = onDateRangeConfirmed,
-                                onNewsOrderChanged = onNewsOrderChanged,
-                                onNewsSourcesChanged = onNewsSourcesChanged
-                            )
-                        }*/
-
         },
         content = content
     )

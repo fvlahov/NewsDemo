@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -46,7 +47,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.paging.LoadState
 import androidx.paging.LoadStates
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
@@ -59,6 +59,7 @@ import hr.vlahov.newsdemo.R
 import hr.vlahov.newsdemo.ui.theme.NewsDemoTheme
 import hr.vlahov.newsdemo.utils.buildAsyncImageModel
 import hr.vlahov.newsdemo.utils.dummyNewsArticles
+import hr.vlahov.newsdemo.utils.exceptionOrNull
 import hr.vlahov.newsdemo.utils.getFormattedDate
 import hr.vlahov.newsdemo.utils.isLoading
 import hr.vlahov.newsdemo.utils.isRefreshing
@@ -73,9 +74,24 @@ fun NewsArticlesList(
     items: LazyPagingItems<NewsArticle>,
     onItemClick: (NewsArticle) -> Unit,
     onNewsArticleLikedChanged: (NewsArticle, isLiked: Boolean) -> Unit,
-    orderBy: NewsFilters.OrderBy,
+    combinedNewsFilters: NewsFilters.CombinedNewsFilters?,
     modifier: Modifier = Modifier,
 ) {
+    val didInitialize = remember { mutableStateOf(false) }
+    val orderBy = remember {
+        derivedStateOf {
+            combinedNewsFilters?.orderBy ?: NewsFilters.OrderBy.DESCENDING
+        }
+    }.value
+
+    if (combinedNewsFilters != null)
+        LaunchedEffect(combinedNewsFilters) {
+            if (didInitialize.value)
+                items.refresh()
+            else
+                didInitialize.value = true
+        }
+
     val pullRefreshState = rememberPullRefreshState(
         refreshing = items.isRefreshing(),
         onRefresh = { items.refresh() }
@@ -87,7 +103,7 @@ fun NewsArticlesList(
         val scrollToItemIndex = if (orderBy == NewsFilters.OrderBy.DESCENDING)
             0
         else
-            items.itemCount - 1
+            (items.itemCount.takeIf { it > 0 } ?: 1) - 1
         lazyListState.scrollToItem(scrollToItemIndex)
     }
 
@@ -135,8 +151,7 @@ fun NewsArticlesList(
 private fun BoxScope.HandleLoadStateError(
     loadStates: LoadStates,
 ) {
-    val exception = (loadStates.append as? LoadState.Error)?.error
-        ?: (loadStates.refresh as? LoadState.Error)?.error
+    val exception = loadStates.exceptionOrNull()
     if (exception is TooManyRequestsException)
         Row(
             modifier = Modifier
@@ -310,7 +325,7 @@ private fun NewsArticleListPreview() {
         NewsArticlesList(
             items = items,
             onItemClick = {},
-            orderBy = NewsFilters.OrderBy.DESCENDING,
+            combinedNewsFilters = NewsFilters.CombinedNewsFilters.default(),
             onNewsArticleLikedChanged = { _, _ -> }
         )
 

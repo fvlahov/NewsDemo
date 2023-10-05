@@ -18,7 +18,7 @@ interface NewsFilters {
     val combinedFilters: Flow<CombinedNewsFilters>
 
     /**
-     * Orders the news ASCENDING or DESCENDING by publish date
+     * Orders the news ASCENDING or DESCENDING by publish date;
      * ASCENDING - Oldest news article will be first
      * DESCENDING - Newest news article will be first
      */
@@ -43,7 +43,17 @@ interface NewsFilters {
         val dateTo: Long?,
         val orderBy: OrderBy,
         val newsSources: List<NewsSource>,
-    )
+    ) {
+        companion object {
+            fun default() = CombinedNewsFilters(
+                searchQuery = null,
+                dateFrom = null,
+                dateTo = null,
+                orderBy = OrderBy.DESCENDING,
+                newsSources = emptyList()
+            )
+        }
+    }
 }
 
 @Singleton

@@ -112,13 +112,14 @@ private fun RowScope.SearchAction(
     colors: IconButtonColors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onBackground),
 ) {
     val isExpandedState = rememberSaveable { mutableStateOf(isExpanded) }
-    val searchQuery = rememberSaveable { mutableStateOf("") }
+    val searchQuery = rememberSaveable { mutableStateOf<String?>(null) }
     val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(searchQuery.value) {
-        delay(debounceMS)
-        onSearchQueryCommitted(searchQuery.value)
-    }
+    if (searchQuery.value != null)
+        LaunchedEffect(searchQuery.value) {
+            delay(debounceMS)
+            onSearchQueryCommitted(searchQuery.value)
+        }
 
     LaunchedEffect(isExpandedState.value) {
         if (isExpandedState.value)
@@ -131,7 +132,7 @@ private fun RowScope.SearchAction(
         exit = slideOutHorizontally()
     ) {
         TextField(
-            value = searchQuery.value,
+            value = searchQuery.value.orEmpty(),
             onValueChange = { searchQuery.value = it },
             label = { Text(text = searchHint) },
             colors = TextFieldDefaults.colors(
@@ -146,7 +147,7 @@ private fun RowScope.SearchAction(
             singleLine = true,
             trailingIcon = {
                 AnimatedVisibility(
-                    visible = searchQuery.value.isNotEmpty(),
+                    visible = searchQuery.value.isNullOrEmpty().not(),
                     enter = fadeIn(),
                     exit = fadeOut()
                 ) {

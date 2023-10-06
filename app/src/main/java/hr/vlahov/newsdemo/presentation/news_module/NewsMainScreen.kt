@@ -1,5 +1,10 @@
 package hr.vlahov.newsdemo.presentation.news_module
 
+import android.app.Activity
+import android.os.Handler
+import android.os.Looper
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -18,8 +23,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +43,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import hr.vlahov.domain.models.news.NewsSource
+import hr.vlahov.newsdemo.R
 import hr.vlahov.newsdemo.navigation.ModuleRoutes
 import hr.vlahov.newsdemo.navigation.NavTarget
 import hr.vlahov.newsdemo.navigation.subscribeToNavigation
@@ -59,6 +68,9 @@ fun NewsMainScreen(
             targetFlow = viewModel.navigator.newsNavigationFlow
         )
     }
+
+    BackToExitHandler()
+
     val currentBackstackEntry = navController.currentBackStackEntryAsState().value
     val currentRoute = currentBackstackEntry?.destination?.route
 
@@ -237,6 +249,24 @@ fun NavGraphBuilder.addNewsArticlesGraph() {
         ) {
             SingleNewsArticleScreen()
         }
+    }
+}
+
+@Composable
+private fun BackToExitHandler() {
+    val currentBackCount = rememberSaveable { mutableIntStateOf(0) }
+    val context = LocalContext.current
+    BackHandler {
+        currentBackCount.intValue = currentBackCount.intValue + 1
+        if (currentBackCount.intValue >= 2) {
+            (context as? Activity)?.finish()
+            return@BackHandler
+        }
+        Toast.makeText(context, R.string.press_back_again_to_leave, Toast.LENGTH_SHORT).show()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            currentBackCount.intValue = 0
+        }, 2000)
     }
 }
 

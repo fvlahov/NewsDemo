@@ -192,6 +192,7 @@ private fun FiltersDropdownAction(
     val dropdownMenuExpanded = rememberSaveable { mutableStateOf(false) }
     val bottomSheetVisible = rememberSaveable { mutableStateOf(false) }
 
+    val orderBy = remember { mutableStateOf(NewsFilters.OrderBy.DESCENDING) }
 
     Column {
         IconButton(onClick = { dropdownMenuExpanded.value = dropdownMenuExpanded.value.not() }) {
@@ -220,8 +221,12 @@ private fun FiltersDropdownAction(
                 modifier = Modifier.padding(8.dp, 0.dp)
             )
             NewsOrderBySelector(
-                onNewsOrderChanged = onNewsOrderChanged,
-                modifier = Modifier.padding(8.dp, 0.dp)
+                onNewsOrderChanged = {
+                    orderBy.value = it
+                    onNewsOrderChanged(it)
+                },
+                modifier = Modifier.padding(8.dp, 0.dp),
+                orderBy = orderBy.value
             )
         }
     }
@@ -329,22 +334,20 @@ private fun DateRangeBottomSheet(
 private fun NewsOrderBySelector(
     onNewsOrderChanged: (orderBy: NewsFilters.OrderBy) -> Unit,
     modifier: Modifier = Modifier,
-    currentOrderBy: NewsFilters.OrderBy = NewsFilters.OrderBy.DESCENDING,
+    orderBy: NewsFilters.OrderBy,
 ) {
-    val orderBy = remember { mutableStateOf(currentOrderBy) }
     val scope = rememberCoroutineScope()
 
     val animatedRotation =
-        remember { Animatable(if (orderBy.value == NewsFilters.OrderBy.ASCENDING) 0f else 180f) }
+        remember { Animatable(if (orderBy == NewsFilters.OrderBy.ASCENDING) 0f else 180f) }
 
     TextButton(
         onClick = {
-            orderBy.value = orderBy.value.toggle()
-            onNewsOrderChanged(orderBy.value)
+            onNewsOrderChanged(orderBy.toggle())
 
             scope.launch {
                 animatedRotation.animateTo(
-                    targetValue = if (orderBy.value == NewsFilters.OrderBy.ASCENDING) 0f else 180f,
+                    targetValue = if (orderBy == NewsFilters.OrderBy.DESCENDING) 0f else 180f,
                 )
             }
         },
@@ -503,7 +506,7 @@ private fun FiltersDropdownPreview() {
             )
             NewsOrderBySelector(
                 onNewsOrderChanged = { },
-                currentOrderBy = NewsFilters.OrderBy.ASCENDING
+                orderBy = NewsFilters.OrderBy.ASCENDING
             )
         }
     }

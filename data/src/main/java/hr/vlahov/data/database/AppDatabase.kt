@@ -21,7 +21,7 @@ import hr.vlahov.data.models.database.ProfileEntity
         LikedNewsArticleEntity::class,
         NewsSourceEntity::class
     ],
-    version = 2,
+    version = 1,
 )
 abstract class AppDatabase : RoomDatabase() {
 

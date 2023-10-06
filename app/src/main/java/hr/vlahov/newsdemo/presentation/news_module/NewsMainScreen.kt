@@ -72,18 +72,12 @@ fun NewsMainScreen(
         selectedNewsSources = selectedNewsSources,
         onNavigateTo = { newsNavItem ->
             navController.navigate(newsNavItem.destinationName) {
-                this.launchSingleTop = true
+                popUpTo(navController.graph.startDestinationId) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
             }
-            /*            try {
-                            //GetBackStackEntry throws exception if there is no backstack entry with route
-                            navController.getBackStackEntry(newsNavItem.destinationName).destination.route?.let {
-                                navController.popBackStack(route = it, inclusive = false)
-                            }
-                        } catch (e: Exception) {
-                            navController.navigate(newsNavItem.destinationName) {
-                                this.launchSingleTop = true
-                            }
-                        }*/
         },
         onSearchQueryCommitted = viewModel::setSearchQuery,
         onDateRangeConfirmed = viewModel::setDateRange,

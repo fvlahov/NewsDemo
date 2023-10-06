@@ -6,7 +6,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import hr.vlahov.newsdemo.presentation.news_module.shared.NewsArticlesList
 import hr.vlahov.newsdemo.utils.ErrorHandler
-import hr.vlahov.newsdemo.utils.isInErrorOrLoading
 
 @Composable
 fun AllNewsScreen(
@@ -16,8 +15,7 @@ fun AllNewsScreen(
     val items = viewModel.allNewsArticles.collectAsLazyPagingItems()
     val error = viewModel.errors.collectAsStateWithLifecycle().value
 
-    if (items.isInErrorOrLoading().not())
-        ErrorHandler(error = error)
+    ErrorHandler(error = error)
 
     NewsArticlesList(
         items = items,

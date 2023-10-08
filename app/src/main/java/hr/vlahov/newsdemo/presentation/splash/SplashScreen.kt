@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -36,8 +38,9 @@ import hr.vlahov.newsdemo.utils.ErrorHandler
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen() {
-    val viewModel = hiltViewModel<SplashScreenViewModel>()
+fun SplashScreen(
+    viewModel: SplashScreenViewModel = hiltViewModel(),
+) {
     val error = viewModel.errors.collectAsStateWithLifecycle().value
     ErrorHandler(error = error)
     AnimatedTextScreen(
@@ -84,6 +87,7 @@ private fun AnimatedTextScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .semantics { contentDescription = "Splash Screen" }
             .then(modifier)
     ) {
         Text(

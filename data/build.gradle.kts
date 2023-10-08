@@ -43,14 +43,10 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-
-    testImplementation("com.google.dagger:hilt-android-testing:2.44")
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
 
     val retrofitVersion = "2.9.0"
 
@@ -69,6 +65,9 @@ dependencies {
     //Hilt
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     kapt("com.google.dagger:hilt-compiler:$hiltVersion")
+    testImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
     //Room
     val roomVersion = "2.5.2"

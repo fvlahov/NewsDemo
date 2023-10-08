@@ -16,7 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "hr.vlahov.newsdemo.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -66,14 +66,18 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
 
-    val navVersion = "2.7.3"
+    //Navigation
+    val navVersion = "2.7.4"
     implementation("androidx.navigation:navigation-compose:$navVersion")
+    androidTestImplementation("androidx.navigation:navigation-testing:$navVersion")
 
     val hiltVersion = "2.46.1"
     //Hilt
     implementation("com.google.dagger:hilt-android:$hiltVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
     //Coil
     implementation("io.coil-kt:coil-compose:2.4.0")
